@@ -45,11 +45,11 @@ init_stacks(Pack1, Pack2, Pack3):-
     Pack3 = ['M', 'N', 'F', '%', 'C', 'L', 'O', 'R', 'I'].
 
 init_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Key, Player):-
+    (Player = 1; Player = 2),
     init_board(Board1, Board2),
     init_key(Key),
     init_score(Score),
     init_stacks(Pack1, Pack2, Pack3),
-    Player = 'Player1',
     display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Key, Player).
 
 display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Key, Player):-
@@ -109,9 +109,9 @@ display_line([Head | Tail]):-
     display_line(Tail).
 
 display_player_playing(Player):-
+    write('Player '),
     write(Player),
     write(': I am playing bro').
-
 
 
 
