@@ -52,6 +52,9 @@ init_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Key, Player):-
     init_stacks(Pack1, Pack2, Pack3),
     display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Key, Player).
 
+play:-
+    init_game(_, _, _, _, _, _, _, _).
+
 display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Key, Player):-
     write('\t   PLAYER 1\t\t\t\t\t    PLAYER 2\n'),
     display_boards(0, Board1, Board2),
