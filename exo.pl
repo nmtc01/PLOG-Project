@@ -44,11 +44,7 @@ init_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     (Player = 1; Player = 2),
     init_board(Board1, Board2),
     init_score(Score),
-    init_stacks(Pack1, Pack2, Pack3),
-    display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player).
-
-play(Player):-
-    init_game(_, _, _, _, _, _, Player).
+    init_stacks(Pack1, Pack2, Pack3).
 
 display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     write('\t\t      PLAYER 1\t\t\t\t\t\t\t\t\tPLAYER 2\n'),
@@ -110,6 +106,56 @@ display_player_playing(Player):-
     write('Player '),
     write(Player),
     write(': I am playing bro').
+
+set_piece(Line, Column, Piece, BoardIn, BoardOut):-
+    set_in_line(Line, Column, Piece, BoardIn, BoardOut).
+
+set_in_line(1, Column, Piece, [Line| Others], [NewLine| Others]):-
+    set_in_column(Column, Piece, Line, NewLine).
+
+set_in_line(N, Column, Piece, [Line| Others], [Line| NewOthers]):-
+    N > 1,
+    Next is N-1,
+    set_in_line(Next, Column, Piece, Others, NewOthers).
+
+set_in_column(1, Piece, [_|Others], [Piece|Others]).
+
+set_in_column(N, Piece, [Column|Others], [Column|NewOthers]):-
+    N > 1,
+    Next is N-1,
+    set_in_column(Next, Piece, Others, NewOthers).
+
+play:-
+    init_game(Board1, Board2, Score, Pack1, Pack2, Pack3, 1),
+    repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, 1).
+
+repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
+    display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),
+    write('\nChoose a piece (example: "g1x.")\n'),
+    read(InputPiece),
+    get_char(_),
+    write('Input coordinates (example: "(x,y).")\n'),
+    read(InputCoords),
+    InputCoords =.. List,
+    getXY(3, List, InputCoordX, InputCoordY),
+    write('Piece: '),
+    write(InputPiece),
+    write(' at Coords: ('),
+    write(InputCoordX),
+    write(','),
+    write(InputCoordY),
+    write(')\n\n'),
+    set_piece(InputCoordX, InputCoordY, InputPiece, Board1, BoardOut1),
+    repeat(BoardOut1, Board2, Score, Pack1, Pack2, Pack3, 1).
+
+getXY(2, [HeadX|[HeadY|_Tail]], InputCoordX, InputCoordY):-
+    InputCoordX is HeadX,
+    InputCoordY is HeadY.
+
+getXY(N, [_Head|Tail], InputCoordX, InputCoordY):-
+    N > 2,
+    Next is N-1,
+    getXY(Next, Tail, InputCoordX, InputCoordY).
 
 
 
