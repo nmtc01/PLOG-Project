@@ -131,6 +131,20 @@ play:-
 
 repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),
+    handleInOut(InputCoordX, InputCoordY, InputPiece),
+    handleMove(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut),
+    handleNextMove(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3).
+
+getXY(2, [HeadX|[HeadY|_Tail]], InputCoordX, InputCoordY):-
+    InputCoordX is HeadX,
+    InputCoordY is HeadY.
+
+getXY(N, [_Head|Tail], InputCoordX, InputCoordY):-
+    N > 2,
+    Next is N-1,
+    getXY(Next, Tail, InputCoordX, InputCoordY).
+
+handleInOut(InputCoordX, InputCoordY, InputPiece):-
     write('\nChoose a piece (example: "g1x.")\n'),
     read(InputPiece),
     get_char(_),
@@ -144,18 +158,18 @@ repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     write(InputCoordX),
     write(','),
     write(InputCoordY),
-    write(')\n\n'),
-    set_piece(InputCoordX, InputCoordY, InputPiece, Board1, BoardOut1),
-    repeat(BoardOut1, Board2, Score, Pack1, Pack2, Pack3, 1).
+    write(')\n\n').
 
-getXY(2, [HeadX|[HeadY|_Tail]], InputCoordX, InputCoordY):-
-    InputCoordX is HeadX,
-    InputCoordY is HeadY.
+handleMove(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut):-
+    (Player = 1, set_piece(InputCoordX, InputCoordY, InputPiece, Board1, BoardOut));
+    (Player = 2, set_piece(InputCoordX, InputCoordY, InputPiece, Board2, BoardOut)).
 
-getXY(N, [_Head|Tail], InputCoordX, InputCoordY):-
-    N > 2,
-    Next is N-1,
-    getXY(Next, Tail, InputCoordX, InputCoordY).
+handleNextMove(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3):-
+    NextPlayer is (Player mod 2) + 1,
+    ((Player = 1, repeat(BoardOut, Board2, Score, Pack1, Pack2, Pack3, NextPlayer));
+     (Player = 2, repeat(Board1, BoardOut, Score, Pack1, Pack2, Pack3, NextPlayer))).
+
+
 
 
 
