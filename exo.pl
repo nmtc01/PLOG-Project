@@ -106,6 +106,7 @@ display_stacks(Pack1, Pack2, Pack3):-
     write(Top3),
     write('\n'),
     write('\n').
+
 display_player_playing(Player):-
     write('Player '),
     write(Player),
@@ -130,18 +131,11 @@ set_in_column(N, Piece, [Column|Others], [Column|NewOthers]):-
     Next is N-1,
     set_in_column(Next, Piece, Others, NewOthers).
 
-play:-
-    init_game(Board1, Board2, Score, Pack1, Pack2, Pack3, 1),
-    display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, 1),
-    %place_star(Board1, Board2, Score, Pack1, Pack2, Pack3, 1),
-    repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, 1).
-
 repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),
     handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece),
     handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut),
     handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3).
-
 
 get_xy(2, [HeadX|[HeadY|_Tail]], InputCoordX, InputCoordY):-
     InputCoordX is HeadX,
@@ -196,12 +190,43 @@ handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3):-
     ((Player = 1, repeat(BoardOut, Board2, Score, Pack1, Pack2, Pack3, NextPlayer));
      (Player = 2, repeat(Board1, BoardOut, Score, Pack1, Pack2, Pack3, NextPlayer))).
 
-place_star(Board1, Board2, Player):-
+place_star(Board1, Board2, BoardOut, Player):-
     write('Choose a place to your star\n'),
     handle_coords(InputCoordX, InputCoordY),
-    handle_move(Player, InputCoordX, InputCoordY, ' S ', Board1, Board2, BoardOut),
+    handle_move(Player, InputCoordX, InputCoordY, ' S ', Board1, Board2, BoardOut).
+
+play_game(0,Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
+    repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, Player).
+
+play_game(N, Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
+    N > 0,
+    display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),
+    place_star(Board1, Board2, BoardOut, Player),
+    Next is N-1,
     NextPlayer is (Player mod 2) + 1,
-    write('Choose a place to your star\n'),
-    handle_coords(InputCoordX, InputCoordY),
-    handle_move(Player, InputCoordX, InputCoordY, ' S ', Board1, Board2, BoardOut),
-    NextPlayer is (Player mod 2) + 1.
+    ((Player = 1, play_game(Next, BoardOut, Board2, Score, Pack1, Pack2, Pack3, NextPlayer));
+     (Player = 2, play_game(Next, Board1, BoardOut, Score, Pack1, Pack2, Pack3, NextPlayer))).
+
+play:-
+    init_game(Board1, Board2, Score, Pack1, Pack2, Pack3, 1),
+    play_game(2, Board1, Board2, Score, Pack1, Pack2, Pack3, 1).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
