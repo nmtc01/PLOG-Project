@@ -36,9 +36,9 @@ init_score(Score):-
     Score = [0,0].
 
 init_stacks(Pack1, Pack2, Pack3):-
-    Pack1 = ['G1X', 'R1Y', 'B1X', 'R1X', 'B3X', 'R1Z', 'B1Z', 'G2Z', 'B1Y'],
-    Pack2 = ['G2X', 'B2X', 'R2X', 'B3Y', 'B2Z', 'B2Y', 'R2Z', 'G1Z', 'R2Y'],
-    Pack3 = ['G1Y', 'G2Y', 'R3Y', 'B3Z', 'R3X', 'G3X', 'G3Y', 'G3Z', 'R3Z'].
+    Pack1 = ['g1x', 'r1y', 'b1x', 'r1x', 'b3x', 'r1z', 'b1z', 'g2z', 'b1y'],
+    Pack2 = ['g2x', 'b2x', 'r2x', 'b3y', 'b2z', 'b2y', 'r2z', 'g1z', 'r2y'],
+    Pack3 = ['g1y', 'g2y', 'r3y', 'b3z', 'r3x', 'g3x', 'g3y', 'g3z', 'r3z'].
 
 init_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     (Player = 1; Player = 2),
@@ -107,6 +107,7 @@ display_player_playing(Player):-
     write(Player),
     write(': I am playing bro').
 
+
 set_piece(Line, Column, Piece, BoardIn, BoardOut):-
     set_in_line(Line, Column, Piece, BoardIn, BoardOut).
 
@@ -131,7 +132,7 @@ play:-
 
 repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),
-    handleInOut(InputCoordX, InputCoordY, InputPiece),
+    handleInOut(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece),
     handleMove(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut),
     handleNextMove(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3).
 
@@ -144,10 +145,9 @@ getXY(N, [_Head|Tail], InputCoordX, InputCoordY):-
     Next is N-1,
     getXY(Next, Tail, InputCoordX, InputCoordY).
 
-handleInOut(InputCoordX, InputCoordY, InputPiece):-
-    write('\nChoose a piece (example: "g1x.")\n'),
-    read(InputPiece),
-    get_char(_),
+
+handleInOut(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece):-
+    read_piece(Pack1, Pack2, Pack3, InputPiece),
     write('Input coordinates (example: "(x,y).")\n'),
     read(InputCoords),
     InputCoords =.. List,
@@ -159,6 +159,23 @@ handleInOut(InputCoordX, InputCoordY, InputPiece):-
     write(','),
     write(InputCoordY),
     write(')\n\n').
+
+read_piece(Pack1, Pack2, Pack3, InputPiece):-
+    write('\nChoose a piece (example: "g1x.")\n'),
+    read(InputPiece),
+    get_char(_),
+
+    nth0(0, Pack1, Top1),
+    nth0(0, Pack2, Top2),
+    nth0(0, Pack3, Top3),
+    
+    (Top1 == InputPiece;
+     Top2 == InputPiece; 
+     Top3 == InputPiece);
+
+    (write('Please choose an available piece...'),
+     read_piece(Pack1, Pack2, Pack3, InputPiece)).
+
 
 handleMove(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut):-
     (Player = 1, set_piece(InputCoordX, InputCoordY, InputPiece, Board1, BoardOut));
