@@ -36,19 +36,37 @@ init_board(Board1, Board2):-
 init_score(Score):-
     Score = [0,0].
 
-randomizeNumber(Random):-
-    random(0, 9, Random).
+randomize_number(Random):-
+    random(0, 27, Random).
+
+add_element(Element, List, [Element|List]).
+
+prepare_pack(0, _, _).
+prepare_pack(N, Pack, PackNumber):-
+    randomize_number(Random),
+    nth0(Random, Pack, Element),
+    Next is N-1,
+    add_element(Element, PackNumber, Packi),
+    prepare_pack(Next, Pack, Packi).
+
+init_pieces(Pack, Pack1, Pack2, Pack3):-
+    Pack = ['g1x', 'r1y', 'b1x', 'r1x', 'b3x', 'r1z', 'b1z', 'g2z', 'b1y', 'g2x', 'b2x', 'r2x', 'b3y', 'b2z', 'b2y', 'r2z', 'g1z', 'r2y', 'g1y', 'g2y', 'r3y', 'b3z', 'r3x', 'g3x', 'g3y', 'g3z', 'r3z'],
+    init_stacks(Pack1, Pack2, Pack3),
+    prepare_pack(9, Pack, Pack1),
+    prepare_pack(9, Pack, Pack2),
+    prepare_pack(9, Pack, Pack3).
+    
 
 init_stacks(Pack1, Pack2, Pack3):-
-    Pack1 = ['g1x', 'r1y', 'b1x', 'r1x', 'b3x', 'r1z', 'b1z', 'g2z', 'b1y'],
-    Pack2 = ['g2x', 'b2x', 'r2x', 'b3y', 'b2z', 'b2y', 'r2z', 'g1z', 'r2y'],
-    Pack3 = ['g1y', 'g2y', 'r3y', 'b3z', 'r3x', 'g3x', 'g3y', 'g3z', 'r3z'].
+    Pack1 = [],
+    Pack2 = [],
+    Pack3 = [].
 
 init_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     (Player = 1; Player = 2),
     init_board(Board1, Board2),
     init_score(Score),
-    init_stacks(Pack1, Pack2, Pack3).
+    init_pieces(_Pack, Pack1, Pack2, Pack3).
 
 display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     write('\t\t      PLAYER 1\t\t\t\t\t\t\t\t\tPLAYER 2\n'),
