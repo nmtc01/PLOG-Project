@@ -105,7 +105,7 @@ display_stacks(Pack1, Pack2, Pack3):-
 display_player_playing(Player):-
     write('Player '),
     write(Player),
-    write(': I am playing bro').
+    write(': I am playing bro\n').
 
 set_piece(Line, Column, Piece, BoardIn, BoardOut):-
     set_in_line(Line, Column, Piece, BoardIn, BoardOut).
@@ -127,31 +127,30 @@ set_in_column(N, Piece, [Column|Others], [Column|NewOthers]):-
 
 play:-
     init_game(Board1, Board2, Score, Pack1, Pack2, Pack3, 1),
+    display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, 1),
+    %place_star(Board1, Board2, Score, Pack1, Pack2, Pack3, 1),
     repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, 1).
 
 repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),
-    handleInOut(InputCoordX, InputCoordY, InputPiece),
-    handleMove(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut),
-    handleNextMove(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3).
+    handle_in_out(InputCoordX, InputCoordY, InputPiece),
+    handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut),
+    handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3).
 
-getXY(2, [HeadX|[HeadY|_Tail]], InputCoordX, InputCoordY):-
+get_xy(2, [HeadX|[HeadY|_Tail]], InputCoordX, InputCoordY):-
     InputCoordX is HeadX,
     InputCoordY is HeadY.
 
-getXY(N, [_Head|Tail], InputCoordX, InputCoordY):-
+get_xy(N, [_Head|Tail], InputCoordX, InputCoordY):-
     N > 2,
     Next is N-1,
-    getXY(Next, Tail, InputCoordX, InputCoordY).
+    get_xy(Next, Tail, InputCoordX, InputCoordY).
 
-handleInOut(InputCoordX, InputCoordY, InputPiece):-
+handle_in_out(InputCoordX, InputCoordY, InputPiece):-
     write('\nChoose a piece (example: "g1x.")\n'),
     read(InputPiece),
     get_char(_),
-    write('Input coordinates (example: "(x,y).")\n'),
-    read(InputCoords),
-    InputCoords =.. List,
-    getXY(3, List, InputCoordX, InputCoordY),
+    handle_coords(InputCoordX, InputCoordY),
     write('Piece: '),
     write(InputPiece),
     write(' at Coords: ('),
@@ -160,14 +159,31 @@ handleInOut(InputCoordX, InputCoordY, InputPiece):-
     write(InputCoordY),
     write(')\n\n').
 
-handleMove(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut):-
+handle_coords(InputCoordX, InputCoordY):-
+    write('Input coordinates (example: "(x,y).")\n'),
+    read(InputCoords),
+    InputCoords =.. List,
+    get_xy(3, List, InputCoordX, InputCoordY).
+
+handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut):-
     (Player = 1, set_piece(InputCoordX, InputCoordY, InputPiece, Board1, BoardOut));
     (Player = 2, set_piece(InputCoordX, InputCoordY, InputPiece, Board2, BoardOut)).
 
-handleNextMove(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3):-
+handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3):-
     NextPlayer is (Player mod 2) + 1,
     ((Player = 1, repeat(BoardOut, Board2, Score, Pack1, Pack2, Pack3, NextPlayer));
      (Player = 2, repeat(Board1, BoardOut, Score, Pack1, Pack2, Pack3, NextPlayer))).
+
+place_star(Board1, Board2, Player):-
+    write('Choose a place to your star\n'),
+    handle_coords(InputCoordX, InputCoordY),
+    handle_move(Player, InputCoordX, InputCoordY, ' S ', Board1, Board2, BoardOut),
+    NextPlayer is (Player mod 2) + 1,
+    write('Choose a place to your star\n'),
+    handle_coords(InputCoordX, InputCoordY),
+    handle_move(Player, InputCoordX, InputCoordY, ' S ', Board1, Board2, BoardOut),
+    NextPlayer is (Player mod 2) + 1.
+
 
 
 
