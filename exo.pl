@@ -1,4 +1,5 @@
 :-use_module(library(lists)).
+:-use_module(library(random)).
 
 init_board(Board1, Board2):-
     Board1 = [ [' 0 ', ' 0 ', ' 0 ', ' 0 ', ' 0 ', ' 0 ', ' 0 ', ' 0 ', ' 0 ', ' 0 ', ' 0 ', ' 0 ', ' 0 ', ' 0 '],
@@ -34,6 +35,9 @@ init_board(Board1, Board2):-
 
 init_score(Score):-
     Score = [0,0].
+
+randomizeNumber(Random):-
+    random(0, 9, Random).
 
 init_stacks(Pack1, Pack2, Pack3):-
     Pack1 = ['g1x', 'r1y', 'b1x', 'r1x', 'b3x', 'r1z', 'b1z', 'g2z', 'b1y'],
@@ -165,6 +169,7 @@ handle_coords(InputCoordX, InputCoordY):-
     InputCoords =.. List,
     get_xy(3, List, InputCoordX, InputCoordY).
 
+
 read_piece(Pack1, Pack2, Pack3, InputPiece):-
     write('\nChoose a piece (example: "g1x.")\n'),
     read(InputPiece),
@@ -200,22 +205,3 @@ place_star(Board1, Board2, Player):-
     handle_coords(InputCoordX, InputCoordY),
     handle_move(Player, InputCoordX, InputCoordY, ' S ', Board1, Board2, BoardOut),
     NextPlayer is (Player mod 2) + 1.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
