@@ -181,7 +181,12 @@ handle_coords(InputCoordX, InputCoordY):-
     write('Input coordinates (example: "(x,y).")\n'),
     read(InputCoords),
     InputCoords =.. List,
-    get_xy(3, List, InputCoordX, InputCoordY).
+    (    
+        (get_xy(3, List, NewInputCoordX, NewInputCoordY), (NewInputCoordX > 14; NewInputCoordX < 1), write('Coord x out of range: [1,14]'));
+        (get_xy(3, List, NewInputCoordX, NewInputCoordY), (NewInputCoordY > 14; NewInputCoordY < 1), write('Coord y out of range: [1,14]'));
+        (get_xy(3, List, NewInputCoordX, NewInputCoordY), InputCoordX = NewInputCoordX, InputCoordY = NewInputCoordY);
+        handle_coords(InputCoordX, InputCoordY)
+    ).
 
 
 read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
@@ -193,12 +198,12 @@ read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
     nth0(0, Pack2, Top2),
     nth0(0, Pack3, Top3),
     
-    (((Top1 == InputPiece, PackUsed = 1);
+    ((Top1 == InputPiece, PackUsed = 1);
       (Top2 == InputPiece, PackUsed = 2); 
       (Top3 == InputPiece, PackUsed = 3));
 
     (write('Please choose an available piece...'),
-     read_piece(Pack1, Pack2, Pack3, InputPiece))).
+     read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed)).
 
 
 handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut):-
