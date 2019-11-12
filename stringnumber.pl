@@ -1,3 +1,4 @@
+string_number(0, '0').
 string_number(1, '1').
 string_number(2, '2').
 string_number(3, '3').

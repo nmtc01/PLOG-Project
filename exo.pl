@@ -31,9 +31,11 @@ get_xy(N, [_Head|Tail], InputCoordX, InputCoordY):-
     Next is N-1,
     get_xy(Next, Tail, InputCoordX, InputCoordY).
 
-handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUsed):-
+handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUsed, PossibleMoves):-
     read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed),
-    handle_coords(InputCoordX, InputCoordY),
+    handle_coords(InputCoords, InputCoordX, InputCoordY),
+    length(PossibleMoves, Size),
+    verifyMove(Size, InputCoords, PossibleMoves),
     write('Piece: '),
     write(InputPiece),
     write(' at Coords: ('),
@@ -42,7 +44,7 @@ handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUse
     write(InputCoordY),
     write(')\n\n').
 
-handle_coords(InputCoordX, InputCoordY):-
+handle_coords(InputCoords, InputCoordX, InputCoordY):-
     write('Input coordinates (example: "(x,y).")\n'),
     read(InputCoords),
     InputCoords =.. List,
@@ -50,7 +52,7 @@ handle_coords(InputCoordX, InputCoordY):-
         (get_xy(3, List, NewInputCoordX, NewInputCoordY), (NewInputCoordX > 14; NewInputCoordX < 1), write('Coord x out of range: [1,14]'));
         (get_xy(3, List, NewInputCoordX, NewInputCoordY), (NewInputCoordY > 14; NewInputCoordY < 1), write('Coord y out of range: [1,14]'));
         (get_xy(3, List, NewInputCoordX, NewInputCoordY), InputCoordX = NewInputCoordX, InputCoordY = NewInputCoordY);
-        handle_coords(InputCoordX, InputCoordY)
+        handle_coords(InputCoords, InputCoordX, InputCoordY)
     ).
 
 
@@ -71,10 +73,8 @@ read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
      read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed)).
 
 addMoves(InputCoordX, InputCoordY, PossibleMoves, MovesOut):-
-    %string_number(X, InputCoordX),
     XUp is InputCoordX-1,
     XDown is InputCoordX+1,
-    %string_number(Y, InputCoordY),
     X is InputCoordX,
     YLeft is InputCoordY-1,
     YRight is InputCoordY+1,
@@ -112,7 +112,15 @@ addMoves(InputCoordX, InputCoordY, PossibleMoves, MovesOut):-
     add_element(Move6, NewPMoves5, NewPMoves6),
     add_element(Move7, NewPMoves6, NewPMoves7),
     add_element(Move8, NewPMoves7, NewPMoves8),
-    MovesOut = NewPMoves8.
+    MovesOut = NewPMoves8,
+
+    write(MovesOut).
+
+verifyMove(N, InputCoords, [Move|Others]):-
+    N > 0,
+    (InputCoords = Move;
+    (Next is N-1,
+     verifyMove(Next, InputCoords, Others))).
 
 handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves, MovesOut):-
     ((Player = 1, set_piece(InputCoordX, InputCoordY, InputPiece, Board1, BoardOut));
@@ -127,7 +135,7 @@ handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3, P
 
 repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves):-
     display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),
-    handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUsed),
+    handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves),
     handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves, MovesOut),
     (
         (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, Score, NewPack1, Pack2, Pack3, MovesOut));
@@ -135,9 +143,9 @@ repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves):-
         (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, NewPack3, MovesOut))
     ).
 
-place_star(Board1, Board2, BoardOut, Player, PossibleMoves):-
+place_star(Board1, Board2, BoardOut, Player, PossibleMoves, MovesOut):-
     write('Choose a place to your star\n'),
-    handle_coords(InputCoordX, InputCoordY),
+    handle_coords(_,InputCoordX, InputCoordY),
     handle_move(Player, InputCoordX, InputCoordY, ' S ', Board1, Board2, BoardOut, PossibleMoves, MovesOut).
 
 play_game(0,Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves):-
@@ -146,11 +154,11 @@ play_game(0,Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves):-
 play_game(N, Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves):-
     N > 0,
     display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),
-    place_star(Board1, Board2, BoardOut, Player, PossibleMoves),
+    place_star(Board1, Board2, BoardOut, Player, PossibleMoves, MovesOut),
     Next is N-1,
     NextPlayer is (Player mod 2) + 1,
-    ((Player = 1, play_game(Next, BoardOut, Board2, Score, Pack1, Pack2, Pack3, NextPlayer, PossibleMoves));
-     (Player = 2, play_game(Next, Board1, BoardOut, Score, Pack1, Pack2, Pack3, NextPlayer, PossibleMoves))).
+    ((Player = 1, play_game(Next, BoardOut, Board2, Score, Pack1, Pack2, Pack3, NextPlayer, MovesOut));
+     (Player = 2, play_game(Next, Board1, BoardOut, Score, Pack1, Pack2, Pack3, NextPlayer, MovesOut))).
 
 play:-
     init_game(Board1, Board2, Score, _Pack1, _Pack2, _Pack3,  PackOut1, PackOut2, PackOut3, 1),
