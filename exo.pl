@@ -149,9 +149,13 @@ set_in_column(N, Piece, [Column|Others], [Column|NewOthers]):-
 
 repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),
-    handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece),
+    handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUsed),
     handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut),
-    handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3).
+    (
+        (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, Score, NewPack1, Pack2, Pack3));
+        (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, NewPack2, Pack3));
+        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, NewPack3))
+    ).
 
 get_xy(2, [HeadX|[HeadY|_Tail]], InputCoordX, InputCoordY):-
     InputCoordX is HeadX,
@@ -162,8 +166,8 @@ get_xy(N, [_Head|Tail], InputCoordX, InputCoordY):-
     Next is N-1,
     get_xy(Next, Tail, InputCoordX, InputCoordY).
 
-handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece):-
-    read_piece(Pack1, Pack2, Pack3, InputPiece),
+handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUsed):-
+    read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed),
     handle_coords(InputCoordX, InputCoordY),
     write('Piece: '),
     write(InputPiece),
@@ -180,7 +184,7 @@ handle_coords(InputCoordX, InputCoordY):-
     get_xy(3, List, InputCoordX, InputCoordY).
 
 
-read_piece(Pack1, Pack2, Pack3, InputPiece):-
+read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
     write('\nChoose a piece (example: "g1x.")\n'),
     read(InputPiece),
     get_char(_),
@@ -189,12 +193,12 @@ read_piece(Pack1, Pack2, Pack3, InputPiece):-
     nth0(0, Pack2, Top2),
     nth0(0, Pack3, Top3),
     
-    (Top1 == InputPiece;
-     Top2 == InputPiece; 
-     Top3 == InputPiece);
+    (((Top1 == InputPiece, PackUsed = 1);
+      (Top2 == InputPiece, PackUsed = 2); 
+      (Top3 == InputPiece, PackUsed = 3));
 
     (write('Please choose an available piece...'),
-     read_piece(Pack1, Pack2, Pack3, InputPiece)).
+     read_piece(Pack1, Pack2, Pack3, InputPiece))).
 
 
 handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut):-
