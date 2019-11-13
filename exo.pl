@@ -32,10 +32,10 @@ get_xy(N, [_Head|Tail], InputCoordX, InputCoordY):-
     get_xy(Next, Tail, InputCoordX, InputCoordY).
 
 handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUsed, PossibleMoves):-
+    length(PossibleMoves, Size),
     read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed),
     handle_coords(InputCoords, InputCoordX, InputCoordY),
-    length(PossibleMoves, Size),
-    verifyMove(Size, InputCoords, PossibleMoves),
+    verifyMove(Size, InputCoordX, InputCoordY, PossibleMoves),
     write('Piece: '),
     write(InputPiece),
     write(' at Coords: ('),
@@ -114,11 +114,21 @@ addMoves(InputCoordX, InputCoordY, PossibleMoves, MovesOut):-
     add_element(Move8, NewPMoves7, NewPMoves8),
     MovesOut = NewPMoves8.
 
-verifyMove(N, InputCoords, [Move|Others]):-
+
+
+verifyMove(N, InputCoordX, InputCoordY, [Move|Others]):-
     N > 0,
-    (InputCoords = Move;
+
+    X is InputCoordX,
+    Y is InputCoordY,
+    string_number(X, InputXSame),
+    string_number(Y, InputYSame),
+    atom_concat(InputXSame, ',', PreapareCoords),
+    atom_concat(PreapareCoords, InputYSame, Coords),
+
+    (Coords == Move;
     (Next is N-1,
-     verifyMove(Next, InputCoords, Others))).
+     verifyMove(Next, InputCoordX, InputCoordY, Others))).
 
 handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2):-
     (
