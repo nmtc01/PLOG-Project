@@ -33,9 +33,10 @@ get_xy(N, [_Head|Tail], InputCoordX, InputCoordY):-
 
 handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUsed, PossibleMoves):-
     length(PossibleMoves, Size),
-    read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed),
+    read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed),!,
+    repeat,
     handle_coords(InputCoords, InputCoordX, InputCoordY),
-    verifyMove(Size, InputCoordX, InputCoordY, PossibleMoves),
+    verify_moves(Size, InputCoordX, InputCoordY, PossibleMoves),
     write('Piece: '),
     write(InputPiece),
     write(' at Coords: ('),
@@ -48,12 +49,10 @@ handle_coords(InputCoords, InputCoordX, InputCoordY):-
     write('Input coordinates (example: "(x,y).")\n'),
     read(InputCoords),
     InputCoords =.. List,
-    (    
-        (get_xy(3, List, NewInputCoordX, NewInputCoordY), (NewInputCoordX > 14; NewInputCoordX < 1), write('Coord x out of range: [1,14]'));
-        (get_xy(3, List, NewInputCoordX, NewInputCoordY), (NewInputCoordY > 14; NewInputCoordY < 1), write('Coord y out of range: [1,14]'));
-        (get_xy(3, List, NewInputCoordX, NewInputCoordY), InputCoordX = NewInputCoordX, InputCoordY = NewInputCoordY);
-        handle_coords(InputCoords, InputCoordX, InputCoordY)
-    ).
+    get_xy(3, List, NewInputCoordX, NewInputCoordY), 
+    NewInputCoordX < 15, NewInputCoordX > 0,
+    InputCoordX = NewInputCoordX, 
+    InputCoordY = NewInputCoordY,!.
 
 
 read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
@@ -72,7 +71,7 @@ read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
     (write('Please choose an available piece...'),
      read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed)).
 
-addMoves(InputCoordX, InputCoordY, PossibleMoves, MovesOut):-
+add_moves(InputCoordX, InputCoordY, PossibleMoves, MovesOut):-
     XUp is InputCoordX-1,
     XDown is InputCoordX+1,
     X is InputCoordX,
@@ -116,9 +115,8 @@ addMoves(InputCoordX, InputCoordY, PossibleMoves, MovesOut):-
 
 
 
-verifyMove(N, InputCoordX, InputCoordY, [Move|Others]):-
+verify_moves(N, InputCoordX, InputCoordY, [Move|Others]):-
     N > 0,
-
     X is InputCoordX,
     Y is InputCoordY,
     string_number(X, InputXSame),
@@ -128,45 +126,49 @@ verifyMove(N, InputCoordX, InputCoordY, [Move|Others]):-
 
     (Coords == Move;
     (Next is N-1,
-     verifyMove(Next, InputCoordX, InputCoordY, Others))).
+     verify_moves(Next, InputCoordX, InputCoordY, Others))).
 
 handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2):-
     (
         (
             Player = 1, 
             set_piece(InputCoordX, InputCoordY, InputPiece, Board1, BoardOut),
-            addMoves(InputCoordX, InputCoordY, PossibleMoves1, MovesOut1)
+            add_moves(InputCoordX, InputCoordY, PossibleMoves1, MovesOut1)
         );
         (
             Player = 2, 
             set_piece(InputCoordX, InputCoordY, InputPiece, Board2, BoardOut),
-            addMoves(InputCoordX, InputCoordY, PossibleMoves2, MovesOut2)
+            add_moves(InputCoordX, InputCoordY, PossibleMoves2, MovesOut2)
         )
     ).
 
 handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3, PossibleMoves1, PossibleMoves2):-
     NextPlayer is (Player mod 2) + 1,
-    ((Player = 1, repeat(BoardOut, Board2, Score, Pack1, Pack2, Pack3, NextPlayer, PossibleMoves1, PossibleMoves2));
-     (Player = 2, repeat(Board1, BoardOut, Score, Pack1, Pack2, Pack3, NextPlayer, PossibleMoves1, PossibleMoves2))).
+    ((Player = 1, loop(BoardOut, Board2, Score, Pack1, Pack2, Pack3, NextPlayer, PossibleMoves1, PossibleMoves2));
+     (Player = 2, loop(Board1, BoardOut, Score, Pack1, Pack2, Pack3, NextPlayer, PossibleMoves1, PossibleMoves2))).
 
-repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, PossibleMoves2):-
-    display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),
+loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, PossibleMoves2):-
+    display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),!,
     ((
         Player = 1, 
-        handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves1)
+        handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves1),
+        handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
+        (
+        (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, Score, NewPack1, Pack2, Pack3, MovesOut1, PossibleMoves2));
+        (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, NewPack2, Pack3, MovesOut1, PossibleMoves2));
+        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, NewPack3, MovesOut1, PossibleMoves2))
+        )
      );
      (
         Player = 2, 
-        handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves2)
-    )),
-
-    handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
-    
-    (
-        (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, Score, NewPack1, Pack2, Pack3, MovesOut1, MovesOut2));
-        (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, NewPack2, Pack3, MovesOut1, MovesOut2));
-        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, NewPack3, MovesOut1, MovesOut2))
-    ).
+        handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves2),
+        handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
+        (
+        (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, Score, NewPack1, Pack2, Pack3, PossibleMoves1, MovesOut2));
+        (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, NewPack2, Pack3, PossibleMoves1, MovesOut2));
+        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, NewPack3, PossibleMoves1, MovesOut2))
+        )
+    )).
 
 place_star(Board1, Board2, BoardOut, Player, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2):-
     write('Choose a place to your star\n'),
@@ -174,12 +176,15 @@ place_star(Board1, Board2, BoardOut, Player, PossibleMoves1, MovesOut1, Possible
     handle_move(Player, InputCoordX, InputCoordY, ' S ', Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2).
 
 play_game(0,Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, PossibleMoves2):-
-    repeat(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, PossibleMoves2).
+    loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, PossibleMoves2).
 
 play_game(N, Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, PossibleMoves2):-
     N > 0,
-    display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),
+
+    display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),!,
+    repeat,
     place_star(Board1, Board2, BoardOut, Player, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
+
     Next is N-1,
     NextPlayer is (Player mod 2) + 1,
     ((Player = 1, play_game(Next, BoardOut, Board2, Score, Pack1, Pack2, Pack3, NextPlayer, MovesOut1, PossibleMoves2));
