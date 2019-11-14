@@ -212,3 +212,30 @@ play_game(N, Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1,
 play:-
     init_game(Board1, Board2, Score, _Pack1, _Pack2, _Pack3,  PackOut1, PackOut2, PackOut3, 1),
     play_game(2, Board1, Board2, Score, PackOut1, PackOut2, PackOut3, 1, _, _).
+
+
+
+%update_score(Board, InputCoordX, InputCoordY, Score, Player).
+
+cenas:-
+    init_board(Board1,_),
+    get_piece(Board1, 2, 2, Piece),
+    write(Piece).
+
+get_piece(Board, InputCoordX, InputCoordY, Piece):-
+    get_in_line(InputCoordX, InputCoordY, Piece, Board).
+
+get_in_line(1, InputCoordY, Piece, [InputCoordX| _]):-
+    get_in_column(InputCoordY, Piece, InputCoordX).
+
+get_in_line(N, InputCoordY, Piece, [_| Others]):-
+    Next is N-1,
+    get_in_line(Next, InputCoordY, Piece, Others).
+
+get_in_column(1, Piece, [Element|_]):-
+    Piece = Element.
+
+get_in_column(N, Piece, [_|Others]):-
+    N > 1,
+    Next is N-1,
+    get_in_column(Next, Piece, Others).
