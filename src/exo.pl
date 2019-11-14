@@ -153,20 +153,39 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         Player = 1, 
         handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves1),
         handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
+        
+        X is InputCoordX,
+        Y is InputCoordY,
+        string_number(X, InputXSame),
+        string_number(Y, InputYSame),
+        atom_concat(InputXSame, ',', PreapareCoords),
+        atom_concat(PreapareCoords, InputYSame, Coords),
+        delete(MovesOut1, Coords, NextMoves1),
+
         (
-        (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, Score, NewPack1, Pack2, Pack3, MovesOut1, PossibleMoves2));
-        (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, NewPack2, Pack3, MovesOut1, PossibleMoves2));
-        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, NewPack3, MovesOut1, PossibleMoves2))
+        (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, Score, NewPack1, Pack2, Pack3, NextMoves1, PossibleMoves2));
+        (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, NewPack2, Pack3, NextMoves1, PossibleMoves2));
+        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, NewPack3, NextMoves1, PossibleMoves2))
         )
      );
      (
         Player = 2, 
         handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves2),
         handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
+        
+        X is InputCoordX,
+        Y is InputCoordY,
+        string_number(X, InputXSame),
+        string_number(Y, InputYSame),
+        atom_concat(InputXSame, ',', PreapareCoords),
+        atom_concat(PreapareCoords, InputYSame, Coords),
+        delete(MovesOut2, Coords, NextMoves2),
+        nl,write('MovesIn2= '),write(MovesOut1),write(' e MovesOut2= '),write(NextMoves1),nl,
+        
         (
-        (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, Score, NewPack1, Pack2, Pack3, PossibleMoves1, MovesOut2));
-        (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, NewPack2, Pack3, PossibleMoves1, MovesOut2));
-        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, NewPack3, PossibleMoves1, MovesOut2))
+        (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, Score, NewPack1, Pack2, Pack3, PossibleMoves1, NextMoves2));
+        (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, NewPack2, Pack3, PossibleMoves1, NextMoves2));
+        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, NewPack3, PossibleMoves1, NextMoves2))
         )
     )).
 
