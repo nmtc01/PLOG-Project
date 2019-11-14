@@ -217,11 +217,6 @@ play:-
 
 %update_score(Board, InputCoordX, InputCoordY, Score, Player).
 
-cenas:-
-    init_board(Board1,_),
-    get_piece(Board1, 2, 2, Piece),
-    write(Piece).
-
 get_piece(Board, InputCoordX, InputCoordY, Piece):-
     get_in_line(InputCoordX, InputCoordY, Piece, Board).
 
@@ -239,3 +234,39 @@ get_in_column(N, Piece, [_|Others]):-
     N > 1,
     Next is N-1,
     get_in_column(Next, Piece, Others).
+
+get_piece_attributes(Piece, Color, Size, Type):-
+    atom_chars(Piece, Attr),
+    nth0(0, Attr, Color),
+    nth0(1, Attr, Size),
+    nth0(2, Attr, Type).
+
+verify_combination(X, Y, Piece, Score, ScoreOut):-
+    get_piece(Board, X+1, Y, Piece1),
+    get_piece(Board, X+1, Y-1, Piece2),
+    get_piece(Board, X, Y-1, Piece3),
+    get_piece(Board, X-1, Y-1, Piece4),
+    get_piece(Board, X-1, Y, Piece5),
+    get_piece(Board, X-1, Y+1, Piece6),
+    get_piece(Board, X, Y+1, Piece7),
+    get_piece(Board, X+1, Y+1, Piece8),
+
+    verify_piece_combination(Piece, Piece1, Score, ScoreOut1),
+    verify_piece_combination(Piece, Piece2, ScoreOut1, ScoreOut2),
+    verify_piece_combination(Piece, Piece3, ScoreOut2, ScoreOut3),
+    verify_piece_combination(Piece, Piece4, ScoreOut3, ScoreOut4),
+    verify_piece_combination(Piece, Piece5, ScoreOut4, ScoreOut5),
+    verify_piece_combination(Piece, Piece6, ScoreOut5, ScoreOut6),
+    verify_piece_combination(Piece, Piece7, ScoreOut6, ScoreOut7),
+    verify_piece_combination(Piece, Piece8, ScoreOut7, ScoreOut).
+
+verify_combination(Piece1, Piece2, Score, ScoreOut):-
+    get_piece_attributes(Piece1, Color1, Size1, Type1),
+    get_piece_attributes(Piece2, Color2, Size2, Type2),
+    
+    verify_attribute_combination(Color1, Color2, Score, NewScore1),
+    verify_attribute_combination(Size1, Size2, NewScore1, NewScore2),
+    verify_attribute_combination(Type1, Type2, NewScore2, ScoreOut).
+
+    
+
