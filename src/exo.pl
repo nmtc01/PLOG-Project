@@ -35,7 +35,7 @@ handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUse
     length(PossibleMoves, Size),
     read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed),!,
     repeat,
-    handle_coords(InputCoords, InputCoordX, InputCoordY),
+    handle_coords(InputCoordX, InputCoordY),
     verify_moves(Size, InputCoordX, InputCoordY, PossibleMoves),
     write('Piece: '),
     write(InputPiece),
@@ -45,7 +45,7 @@ handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUse
     write(InputCoordY),
     write(')\n\n').
 
-handle_coords(InputCoords, InputCoordX, InputCoordY):-
+handle_coords(InputCoordX, InputCoordY):-
     write('Input coordinates (example: "(x,y).")\n'),
     read(InputCoords),
     InputCoords =.. List,
@@ -172,7 +172,7 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
 
 place_star(Board1, Board2, BoardOut, Player, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2):-
     write('Choose a place to your star\n'),
-    handle_coords(_,InputCoordX, InputCoordY),
+    handle_coords(InputCoordX, InputCoordY),
     handle_move(Player, InputCoordX, InputCoordY, ' S ', Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2).
 
 play_game(0,Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, PossibleMoves2):-
