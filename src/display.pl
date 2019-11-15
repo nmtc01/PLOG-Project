@@ -1,17 +1,18 @@
 display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
-    write('\t\t      PLAYER 1\t\t\t\t\t\t\t\t\tPLAYER 2\n'),
+    write('\33\[2J\n'),
+    write('\t    PLAYER 1\t\t\t\t\t      PLAYER 2\n'),
     display_boards(0, Board1, Board2),
     display_score(Score),
     display_stacks(Pack1, Pack2, Pack3),
     display_player_playing(Player).
 
-display_boards(14, _, _):-
-    write('---------------------------------------------------------\t\t'),
-    write('---------------------------------------------------------\n').
+display_boards(9, _, _):-
+    write('-------------------------------------\t\t'),
+    write('-------------------------------------\n').
 
 display_boards(N, Board1, Board2):-
-    write('_________________________________________________________\t\t'),
-    write('_________________________________________________________\n'),
+    write('_____________________________________\t\t'),
+    write('_____________________________________\n'),
     nth0(N, Board1, Board1LineN),
     write('|'),
     display_line(Board1LineN),
@@ -42,16 +43,16 @@ display_score(Score):-
 display_stacks(Pack1, Pack2, Pack3):-
     write('\n'),
     write('| '),
-    nth0(0, Pack1, Top1),
-    write(Top1),
+    ((nth0(0, Pack1, Top1), write(Top1));
+     write('Empty')),
     write('\t'),
     write('| '),
-    nth0(0, Pack2, Top2),
-    write(Top2),
+    ((nth0(0, Pack2, Top2), write(Top2));
+     write('Empty')),
     write('\t'),
     write('| '),
-    nth0(0, Pack3, Top3),
-    write(Top3),
+    ((nth0(0, Pack3, Top3), write(Top3));
+     write('Empty')),
     write('\n'),
     write('\n').
 

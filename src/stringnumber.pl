@@ -9,7 +9,4 @@ string_number(7, '7').
 string_number(8, '8').
 string_number(9, '9').
 string_number(10, '10').
-string_number(11, '11').
-string_number(12, '12').
-string_number(13, '13').
-string_number(14, '14').
+string_number(10, '11').
