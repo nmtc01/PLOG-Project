@@ -34,6 +34,7 @@ get_coord(N, [_|Tail], InputCoord):-
 
 handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUsed, PossibleMoves):-
     length(PossibleMoves, Size),
+    repeat,
     read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed),!,
     repeat,
     handle_coords(InputCoordX, InputCoordY),
@@ -56,6 +57,11 @@ handle_coords(InputCoordX, InputCoordY):-
     InputCoordX = NewInputCoordX,
     InputCoordY = NewInputCoordY, !.
 
+game_over(Board1, Board2, Winner):-
+    display_boards(0, Board1, Board2),
+    write('The winner is... '), nl,
+    write(Winner), nl,
+    write('bro...'), nl.
 
 read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
     write('\nChoose a piece (example: "g1x")\n'),
@@ -68,10 +74,7 @@ read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
     
     ((Top1 == InputPiece, PackUsed = 1);
       (Top2 == InputPiece, PackUsed = 2); 
-      (Top3 == InputPiece, PackUsed = 3));
-
-    (write('Please choose an available piece...'),
-     read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed)).
+      (Top3 == InputPiece, PackUsed = 3)).
 
 add_moves(InputCoordX, InputCoordY, PossibleMoves, MovesOut):-
     XUp is InputCoordX-1,
@@ -149,8 +152,21 @@ handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, Pack3, P
     ((Player = 1, loop(BoardOut, Board2, Score, Pack1, Pack2, Pack3, NextPlayer, PossibleMoves1, PossibleMoves2));
      (Player = 2, loop(Board1, BoardOut, Score, Pack1, Pack2, Pack3, NextPlayer, PossibleMoves1, PossibleMoves2))).
 
+get_winner(Score, Winner):-
+    nth0(0, Score, Score1),
+    nth0(1, Score, Score2),
+    ((Score1 > Score2,
+    Winner = 'Player 1');
+    (Score1 < Score2,
+    Winner = 'Player 2');
+    Winner = 'Wait! It is a Tie!!! :)'). 
+
 loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, PossibleMoves2):-
-    display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),!,
+    (Pack1 = [], Pack2 = [], Pack3 = [], 
+    get_winner(Score, Winner),
+    game_over(Board1, Board2, Winner));
+
+    (display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player),!,
     ((
         Player = 1, 
         handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves1),
@@ -194,7 +210,7 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, Pack1, NewPack2, Pack3, PossibleMoves1, NextMoves2));
         (PackUsed = 3, delete(Pack3, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, Pack1, Pack2, NewPack3, PossibleMoves1, NextMoves2))
         )
-    )).
+    ))).
 
 place_star(Board1, Board2, BoardOut, Player, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2):-
     write('Choose a place to your star\n'),
@@ -203,6 +219,7 @@ place_star(Board1, Board2, BoardOut, Player, PossibleMoves1, MovesOut1, Possible
 
 play_game(0,Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, PossibleMoves2):-
     loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, PossibleMoves2).
+
 
 play_game(N, Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, PossibleMoves2):-
     N > 0,
