@@ -46,18 +46,19 @@ handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUse
     write(')\n\n').
 
 handle_coords(InputCoordX, InputCoordY):-
-    write('Input coordinates (example: "(x,y).")\n'),
+    write('Input coordinates (example: "x,y")\n'),
     read_line(InputCoords),
+    write(InputCoords),
     get_coord(0, InputCoords, NewInputCoordX), 
-    get_coord(2, InputCoords, NewInputCoordY), 
-    NewInputCoordX < 15, NewInputCoordX > 0,
-    NewInputCoordY < 15, NewInputCoordY > 0,
-    InputCoordX = NewInputCoordX, 
-    InputCoordY = NewInputCoordY,!.
+    get_coord(2, InputCoords, NewInputCoordY),
+    NewInputCoordX < 10, NewInputCoordX > 0,
+    NewInputCoordY < 10, NewInputCoordY > 0,
+    InputCoordX = NewInputCoordX,
+    InputCoordY = NewInputCoordY, !.
 
 
 read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
-    write('\nChoose a piece (example: "g1x.")\n'),
+    write('\nChoose a piece (example: "g1x")\n'),
     read_line(PieceCode),
     atom_codes(InputPiece, PieceCode),
 
@@ -155,8 +156,8 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves1),
         handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
         nth0(0, Score, Points),
-        verify_combination(InputCoordX, InputCoordY, InputPiece, Points, PointsOut),
-        set_piece(1, 1, PointsOut, Score, ScoreOut),
+        verify_combination(Board1, InputCoordX, InputCoordY, InputPiece, Points, PointsOut),
+        set_score(Player, PointsOut, Score, ScoreOut),
         
         X is InputCoordX,
         Y is InputCoordY,
@@ -176,7 +177,10 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         Player = 2, 
         handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves2),
         handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
-        
+        nth0(1, Score, Points),
+        verify_combination(Board2, InputCoordX, InputCoordY, InputPiece, Points, PointsOut),
+        set_score(Player, PointsOut, Score, ScoreOut),
+
         X is InputCoordX,
         Y is InputCoordY,
         string_number(X, InputXSame),
@@ -184,9 +188,6 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         atom_concat(InputXSame, ',', PreapareCoords),
         atom_concat(PreapareCoords, InputYSame, Coords),
         delete(MovesOut2, Coords, NextMoves2),
-        nth0(1, Score, Points),
-        verify_combination(InputCoordX, InputCoordY, InputPiece, Points, PointsOut),
-        set_piece(1, 1, PointsOut, Score, ScoreOut),
         
         (
         (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, NewPack1, Pack2, Pack3, PossibleMoves1, NextMoves2));
@@ -243,14 +244,15 @@ get_piece_attributes(Piece, Color, Size, Type):-
     nth0(1, Attr, Size),
     nth0(2, Attr, Type).
 
-verify_combination(X, Y, Piece, Score, ScoreOut):-
+verify_combination(Board, X, Y, Piece, Score, ScoreOut):-
     XDown is X+1,
+    XDownDown is X+2,
     XUp is X-1,
+    XUpUp is X-2,
     YRight is Y+1,
+    YRightRight is Y+2,
     YLeft is Y-1,
-
-    %%%%%%missing stringnumber
-
+    YLeftLeft is Y-2,
     get_piece(Board, XDown, Y, Piece1),
     get_piece(Board, XDown, YLeft, Piece2),
     get_piece(Board, X, YLeft, Piece3),
@@ -259,25 +261,47 @@ verify_combination(X, Y, Piece, Score, ScoreOut):-
     get_piece(Board, XUp, YRight, Piece6),
     get_piece(Board, X, YRight, Piece7),
     get_piece(Board, XDown, YRight, Piece8),
-    verify_piece_combination(Piece, Piece1, Score, ScoreOut1),
-    verify_piece_combination(Piece, Piece2, ScoreOut1, ScoreOut2),
-    verify_piece_combination(Piece, Piece3, ScoreOut2, ScoreOut3),
-    verify_piece_combination(Piece, Piece4, ScoreOut3, ScoreOut4),
-    verify_piece_combination(Piece, Piece5, ScoreOut4, ScoreOut5),
-    verify_piece_combination(Piece, Piece6, ScoreOut5, ScoreOut6),
-    verify_piece_combination(Piece, Piece7, ScoreOut6, ScoreOut7),
-    verify_piece_combination(Piece, Piece8, ScoreOut7, ScoreOut).
+    get_piece(Board, XDownDown, Y, Piece9),
+    get_piece(Board, XDownDown, YLeftLeft, Piece10),
+    get_piece(Board, X, YLeftLeft, Piece11),
+    get_piece(Board, XUpUp, YLeftLeft, Piece12),
+    get_piece(Board, XUpUp, Y, Piece13),
+    get_piece(Board, XUpUp, YRightRight, Piece14),
+    get_piece(Board, X, YRightRight, Piece15),
+    get_piece(Board, XDownDown, YRightRight, Piece16),
 
-verify_piece_combination(Piece1, Piece2, Score, ScoreOut):-
-    get_piece_attributes(Piece1, Color1, Size1, Type1),
-    get_piece_attributes(Piece2, Color2, Size2, Type2),
-    verify_attribute_combination(Color1, Color2, Score, NewScore1),
-    verify_attribute_combination(Size1, Size2, NewScore1, NewScore2),
-    verify_attribute_combination(Type1, Type2, NewScore2, ScoreOut).
+    verify_piece_combination(Piece, Piece1, Piece9, Score, ScoreOut1),
+    verify_piece_combination(Piece, Piece2, Piece10, ScoreOut1, ScoreOut2),
+    verify_piece_combination(Piece, Piece3, Piece11, ScoreOut2, ScoreOut3),
+    verify_piece_combination(Piece, Piece4, Piece12, ScoreOut3, ScoreOut4),
+    verify_piece_combination(Piece, Piece5, Piece13, ScoreOut4, ScoreOut5),
+    verify_piece_combination(Piece, Piece6, Piece14, ScoreOut5, ScoreOut6),
+    verify_piece_combination(Piece, Piece7, Piece15, ScoreOut6, ScoreOut7),
+    verify_piece_combination(Piece, Piece8, Piece16, ScoreOut7, ScoreOut).
 
-verify_attribute_combination(Attr1, Attr2, Score, ScoreOut):-
-    (Attr1 = Attr2, ScoreOut is Score+1);
+check_matching_attr(Attr1, Attr2, Attr3, Score, ScoreOut):-
+    (verify_attribute_combination(Attr1, Attr2),
+    verify_attribute_combination(Attr2, Attr3),
+    ScoreOut is Score+1);
     ScoreOut is Score.
+
+verify_piece_combination(Piece1, Piece2, Piece3, Score, ScoreOut):-
+    get_piece_attributes(Piece1, Color1, Size1, Type1),
+    
+    get_piece_attributes(Piece2, Color2, Size2, Type2),
+    write(Piece2), nl,
+    get_piece_attributes(Piece3, Color3, Size3, Type3),
+    check_matching_attr(Color1, Color2, Color3, Score, NewScoreOut1),
+    check_matching_attr(Type1, Type2, Type3, NewScoreOut1, NewScoreOut2),
+    check_matching_attr(Size1, Size2, Size3, NewScoreOut2, ScoreOut).
+
+verify_attribute_combination(Attr1, Attr2):-
+    Attr1 \= ' ', Attr2 \= ' ', Attr1 \= '0', Attr2 \= '0', Attr1 = Attr2.
+
+set_score(1, PointsPlayer1, [_|Others], [PointsPlayer1|Others]).
+set_score(2, PointsPlayer2, [PointsPlayer1|[_|Others]], [PointsPlayer1|[PointsPlayer2|Others]]).
+
+
 
 
 
