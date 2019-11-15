@@ -22,14 +22,15 @@ set_in_column(N, Piece, [Column|Others], [Column|NewOthers]):-
     Next is N-1,
     set_in_column(Next, Piece, Others, NewOthers).
 
-get_xy(2, [HeadX|[HeadY|_Tail]], InputCoordX, InputCoordY):-
-    InputCoordX is HeadX,
-    InputCoordY is HeadY.
+get_coord(0, [Head|_], InputCoord):-
+    char_code(CharInputCoord, Head),
+    string_number(InputCoord, CharInputCoord).
 
-get_xy(N, [_Head|Tail], InputCoordX, InputCoordY):-
-    N > 2,
+get_coord(N, [_|Tail], InputCoord):-
+    N > 0,
     Next is N-1,
-    get_xy(Next, Tail, InputCoordX, InputCoordY).
+    write(Tail),nl,
+    get_coord(Next, Tail, InputCoord).
 
 handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUsed, PossibleMoves):-
     length(PossibleMoves, Size),
@@ -47,10 +48,11 @@ handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUse
 
 handle_coords(InputCoordX, InputCoordY):-
     write('Input coordinates (example: "(x,y).")\n'),
-    read(InputCoords),
-    InputCoords =.. List,
-    get_xy(3, List, NewInputCoordX, NewInputCoordY), 
+    read_line(InputCoords),
+    get_coord(0, InputCoords, NewInputCoordX), 
+    get_coord(2, InputCoords, NewInputCoordY), 
     NewInputCoordX < 15, NewInputCoordX > 0,
+    NewInputCoordY < 15, NewInputCoordY > 0,
     InputCoordX = NewInputCoordX, 
     InputCoordY = NewInputCoordY,!.
 
