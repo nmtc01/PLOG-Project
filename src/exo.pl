@@ -29,7 +29,6 @@ get_coord(0, [Head|_], InputCoord):-
 get_coord(N, [_|Tail], InputCoord):-
     N > 0,
     Next is N-1,
-    write(Tail),nl,
     get_coord(Next, Tail, InputCoord).
 
 handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUsed, PossibleMoves):-
@@ -59,8 +58,8 @@ handle_coords(InputCoordX, InputCoordY):-
 
 read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
     write('\nChoose a piece (example: "g1x.")\n'),
-    read(InputPiece),
-    get_char(_),
+    read_line(PieceCode),
+    atom_codes(InputPiece, PieceCode),
 
     nth0(0, Pack1, Top1),
     nth0(0, Pack2, Top2),
@@ -155,6 +154,9 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         Player = 1, 
         handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves1),
         handle_move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
+        nth0(0, Score, Points),
+        verify_combination(InputCoordX, InputCoordY, InputPiece, Points, PointsOut),
+        set_piece(1, 1, PointsOut, Score, ScoreOut),
         
         X is InputCoordX,
         Y is InputCoordY,
@@ -165,9 +167,9 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         delete(MovesOut1, Coords, NextMoves1),
 
         (
-        (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, Score, NewPack1, Pack2, Pack3, NextMoves1, PossibleMoves2));
-        (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, NewPack2, Pack3, NextMoves1, PossibleMoves2));
-        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, NewPack3, NextMoves1, PossibleMoves2))
+        (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, NewPack1, Pack2, Pack3, NextMoves1, PossibleMoves2));
+        (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, Pack1, NewPack2, Pack3, NextMoves1, PossibleMoves2));
+        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, Pack1, Pack2, NewPack3, NextMoves1, PossibleMoves2))
         )
      );
      (
@@ -182,12 +184,14 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         atom_concat(InputXSame, ',', PreapareCoords),
         atom_concat(PreapareCoords, InputYSame, Coords),
         delete(MovesOut2, Coords, NextMoves2),
-        nl,write('MovesIn2= '),write(MovesOut1),write(' e MovesOut2= '),write(NextMoves1),nl,
+        nth0(1, Score, Points),
+        verify_combination(InputCoordX, InputCoordY, InputPiece, Points, PointsOut),
+        set_piece(1, 1, PointsOut, Score, ScoreOut),
         
         (
-        (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, Score, NewPack1, Pack2, Pack3, PossibleMoves1, NextMoves2));
-        (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, NewPack2, Pack3, PossibleMoves1, NextMoves2));
-        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, Score, Pack1, Pack2, NewPack3, PossibleMoves1, NextMoves2))
+        (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, NewPack1, Pack2, Pack3, PossibleMoves1, NextMoves2));
+        (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, Pack1, NewPack2, Pack3, PossibleMoves1, NextMoves2));
+        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, Pack1, Pack2, NewPack3, PossibleMoves1, NextMoves2))
         )
     )).
 
@@ -215,10 +219,6 @@ play:-
     init_game(Board1, Board2, Score, _Pack1, _Pack2, _Pack3,  PackOut1, PackOut2, PackOut3, 1),
     play_game(2, Board1, Board2, Score, PackOut1, PackOut2, PackOut3, 1, _, _).
 
-
-
-%update_score(Board, InputCoordX, InputCoordY, Score, Player).
-
 get_piece(Board, InputCoordX, InputCoordY, Piece):-
     get_in_line(InputCoordX, InputCoordY, Piece, Board).
 
@@ -244,15 +244,21 @@ get_piece_attributes(Piece, Color, Size, Type):-
     nth0(2, Attr, Type).
 
 verify_combination(X, Y, Piece, Score, ScoreOut):-
-    get_piece(Board, X+1, Y, Piece1),
-    get_piece(Board, X+1, Y-1, Piece2),
-    get_piece(Board, X, Y-1, Piece3),
-    get_piece(Board, X-1, Y-1, Piece4),
-    get_piece(Board, X-1, Y, Piece5),
-    get_piece(Board, X-1, Y+1, Piece6),
-    get_piece(Board, X, Y+1, Piece7),
-    get_piece(Board, X+1, Y+1, Piece8),
+    XDown is X+1,
+    XUp is X-1,
+    YRight is Y+1,
+    YLeft is Y-1,
 
+    %%%%%%missing stringnumber
+
+    get_piece(Board, XDown, Y, Piece1),
+    get_piece(Board, XDown, YLeft, Piece2),
+    get_piece(Board, X, YLeft, Piece3),
+    get_piece(Board, XUp, YLeft, Piece4),
+    get_piece(Board, XUp, Y, Piece5),
+    get_piece(Board, XUp, YRight, Piece6),
+    get_piece(Board, X, YRight, Piece7),
+    get_piece(Board, XDown, YRight, Piece8),
     verify_piece_combination(Piece, Piece1, Score, ScoreOut1),
     verify_piece_combination(Piece, Piece2, ScoreOut1, ScoreOut2),
     verify_piece_combination(Piece, Piece3, ScoreOut2, ScoreOut3),
@@ -262,13 +268,18 @@ verify_combination(X, Y, Piece, Score, ScoreOut):-
     verify_piece_combination(Piece, Piece7, ScoreOut6, ScoreOut7),
     verify_piece_combination(Piece, Piece8, ScoreOut7, ScoreOut).
 
-verify_combination(Piece1, Piece2, Score, ScoreOut):-
+verify_piece_combination(Piece1, Piece2, Score, ScoreOut):-
     get_piece_attributes(Piece1, Color1, Size1, Type1),
     get_piece_attributes(Piece2, Color2, Size2, Type2),
-    
     verify_attribute_combination(Color1, Color2, Score, NewScore1),
     verify_attribute_combination(Size1, Size2, NewScore1, NewScore2),
     verify_attribute_combination(Type1, Type2, NewScore2, ScoreOut).
+
+verify_attribute_combination(Attr1, Attr2, Score, ScoreOut):-
+    (Attr1 = Attr2, ScoreOut is Score+1);
+    ScoreOut is Score.
+
+
 
     
 
