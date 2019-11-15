@@ -15,7 +15,8 @@ set_in_line(N, Column, Piece, [Line| Others], [Line| NewOthers]):-
     Next is N-1,
     set_in_line(Next, Column, Piece, Others, NewOthers).
 
-set_in_column(1, Piece, [_|Others], [Piece|Others]).
+set_in_column(1, Piece, [PieceInBoard|Others], [Piece|Others]):-
+    PieceInBoard = ' 0 '.
 
 set_in_column(N, Piece, [Column|Others], [Column|NewOthers]):-
     N > 1,
@@ -48,7 +49,6 @@ handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUse
 handle_coords(InputCoordX, InputCoordY):-
     write('Input coordinates (example: "x,y")\n'),
     read_line(InputCoords),
-    write(InputCoords),
     get_coord(0, InputCoords, NewInputCoordX), 
     get_coord(2, InputCoords, NewInputCoordY),
     NewInputCoordX < 10, NewInputCoordX > 0,
@@ -62,9 +62,9 @@ read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
     read_line(PieceCode),
     atom_codes(InputPiece, PieceCode),
 
-    nth0(0, Pack1, Top1),
-    nth0(0, Pack2, Top2),
-    nth0(0, Pack3, Top3),
+    (nth0(0, Pack1, Top1);
+    nth0(0, Pack2, Top2);
+    nth0(0, Pack3, Top3)),
     
     ((Top1 == InputPiece, PackUsed = 1);
       (Top2 == InputPiece, PackUsed = 2); 
@@ -170,7 +170,7 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         (
         (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, NewPack1, Pack2, Pack3, NextMoves1, PossibleMoves2));
         (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, Pack1, NewPack2, Pack3, NextMoves1, PossibleMoves2));
-        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, Pack1, Pack2, NewPack3, NextMoves1, PossibleMoves2))
+        (PackUsed = 3, delete(Pack3, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, Pack1, Pack2, NewPack3, NextMoves1, PossibleMoves2))
         )
      );
      (
@@ -192,7 +192,7 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         (
         (PackUsed = 1, delete(Pack1, InputPiece, NewPack1), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, NewPack1, Pack2, Pack3, PossibleMoves1, NextMoves2));
         (PackUsed = 2, delete(Pack2, InputPiece, NewPack2), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, Pack1, NewPack2, Pack3, PossibleMoves1, NextMoves2));
-        (PackUsed = 3, delete(Pack1, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, Pack1, Pack2, NewPack3, PossibleMoves1, NextMoves2))
+        (PackUsed = 3, delete(Pack3, InputPiece, NewPack3), handle_next_move(Player, BoardOut, Board1, Board2, ScoreOut, Pack1, Pack2, NewPack3, PossibleMoves1, NextMoves2))
         )
     )).
 
@@ -221,7 +221,8 @@ play:-
     play_game(2, Board1, Board2, Score, PackOut1, PackOut2, PackOut3, 1, _, _).
 
 get_piece(Board, InputCoordX, InputCoordY, Piece):-
-    get_in_line(InputCoordX, InputCoordY, Piece, Board).
+    get_in_line(InputCoordX, InputCoordY, Piece, Board);
+    Piece = ' 0 '.
 
 get_in_line(1, InputCoordY, Piece, [InputCoordX| _]):-
     get_in_column(InputCoordY, Piece, InputCoordX).
@@ -289,7 +290,6 @@ verify_piece_combination(Piece1, Piece2, Piece3, Score, ScoreOut):-
     get_piece_attributes(Piece1, Color1, Size1, Type1),
     
     get_piece_attributes(Piece2, Color2, Size2, Type2),
-    write(Piece2), nl,
     get_piece_attributes(Piece3, Color3, Size3, Type3),
     check_matching_attr(Color1, Color2, Color3, Score, NewScoreOut1),
     check_matching_attr(Type1, Type2, Type3, NewScoreOut1, NewScoreOut2),

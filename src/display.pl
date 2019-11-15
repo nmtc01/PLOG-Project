@@ -43,16 +43,16 @@ display_score(Score):-
 display_stacks(Pack1, Pack2, Pack3):-
     write('\n'),
     write('| '),
-    nth0(0, Pack1, Top1),
-    write(Top1),
+    ((nth0(0, Pack1, Top1), write(Top1));
+     write('Empty')),
     write('\t'),
     write('| '),
-    nth0(0, Pack2, Top2),
-    write(Top2),
+    ((nth0(0, Pack2, Top2), write(Top2));
+     write('Empty')),
     write('\t'),
     write('| '),
-    nth0(0, Pack3, Top3),
-    write(Top3),
+    ((nth0(0, Pack3, Top3), write(Top3));
+     write('Empty')),
     write('\n'),
     write('\n').
 
