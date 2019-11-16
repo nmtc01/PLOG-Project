@@ -172,19 +172,21 @@ game_over(Board1, Board2, Score, Winner):-
 
 choose_move(AILevel, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, Piece, MoveType, PossibleMoves):-
     (MoveType = 'coords',
-    nl,write(PossibleMoves),nl,
+    nl,write('PossibleMoves = '), write(PossibleMoves),nl,
     (((\+var(PossibleMoves)),
     length(PossibleMoves, Size),
     randomize_number(Size, MoveNr),
     nth0(MoveNr, PossibleMoves, PossibleMove),
+    write('Move usado = '), write(PossibleMove),nl,
     atom_chars(PossibleMove, Move),
     get_coord(0, Move, InputCoordX), 
-    get_coord(2, Move, InputCoordY));
-    (randomize_number(9, InputCoordX),
+    get_coord(2, Move, InputCoordY),
+    write('InputCoordX = \n'), write(InputCoordX),nl,
+    write('InputCoordY = \n'), write(InputCoordY),nl);
+    (randomize_number(9, InputCoordX),write('fuck'),nl,
     randomize_number(9, InputCoordY))))
     ;
     (MoveType = 'piece',
-    nl,write('PossibleMoves = '), write(PossibleMoves),nl,
     randomize_number(2, PackUsed),
     ((PackUsed = 0, nth0(0, Pack1, Piece));
      (PackUsed = 1, nth0(0, Pack2, Piece));
