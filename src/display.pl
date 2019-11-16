@@ -1,3 +1,4 @@
+%displays the game on the screen, calling various display predicates
 display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     write('\33\[2J\n'),
     write('\t    PLAYER 1\t\t\t\t\t      PLAYER 2\n'),
@@ -6,10 +7,10 @@ display_game(Board1, Board2, Score, Pack1, Pack2, Pack3, Player):-
     display_stacks(Pack1, Pack2, Pack3),
     display_player_playing(Player).
 
+%displays the boards on the screen
 display_boards(9, _, _):-
     write('-------------------------------------\t\t'),
     write('-------------------------------------\n').
-
 display_boards(N, Board1, Board2):-
     write('_____________________________________\t\t'),
     write('_____________________________________\n'),
@@ -26,20 +27,7 @@ display_boards(N, Board1, Board2):-
     N1 is N+1,
     display_boards(N1, Board1, Board2).
 
-display_line([]).
-display_line([Head | Tail]):-
-    display_cell(Head),
-    display_line(Tail).
-
-display_cell(Cell):-
-    write(Cell),
-    write('|').
-
-display_score(Score):-
-    write('\n'),
-    write('SCORE: '),
-    display_line(Score).
-
+%displays the three pieces on the top of each stack. displays "empty" when the stack doesn't have any more pieces
 display_stacks(Pack1, Pack2, Pack3):-
     write('\n'),
     write('| '),
@@ -56,7 +44,29 @@ display_stacks(Pack1, Pack2, Pack3):-
     write('\n'),
     write('\n').
 
+%displays which player is currently playing
 display_player_playing(Player):-
     write('Player '),
     write(Player),
     write(': I am playing bro\n').
+
+%displays the current score
+display_score(Score):-
+    write('\n'),
+    write('SCORE: '),
+    display_line(Score).
+
+%the following predicates are used to help display the board on the screen
+display_line([]).
+display_line([Head | Tail]):-
+    display_cell(Head),
+    display_line(Tail).
+
+display_cell(Cell):-
+    write(Cell),
+    write('|').
+
+
+
+
+
