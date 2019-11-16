@@ -17,9 +17,17 @@ set_in_column(N, Piece, [Column|Others], [Column|NewOthers]):-
     Next is N-1,
     set_in_column(Next, Piece, Others, NewOthers).
 
-get_coord(0, [Head|_], InputCoord):-
+get_coord_codes(0, [Head|_], InputCoord):-
     char_code(CharInputCoord, Head),
     string_number(InputCoord, CharInputCoord).
+
+get_coord_codes(N, [_|Tail], InputCoord):-
+    N > 0,
+    Next is N-1,
+    get_coord_codes(Next, Tail, InputCoord).
+
+get_coord(0, [Head|_], InputCoord):-
+    string_number(InputCoord, Head).
 
 get_coord(N, [_|Tail], InputCoord):-
     N > 0,

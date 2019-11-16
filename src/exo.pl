@@ -84,7 +84,7 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         Player = 2, 
         (
             ((Choice = 1 ; PlayerChoice = Player), 
-                handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves1))
+                handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves2))
             ;
             (Choice = 2,
                 (
@@ -131,8 +131,8 @@ handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY, InputPiece, PackUse
 handle_coords(InputCoordX, InputCoordY):-
     write('Input coordinates (example: "x,y")\n'),
     read_line(InputCoords),
-    get_coord(0, InputCoords, NewInputCoordX), 
-    get_coord(2, InputCoords, NewInputCoordY),
+    get_coord_codes(0, InputCoords, NewInputCoordX), 
+    get_coord_codes(2, InputCoords, NewInputCoordY),
     NewInputCoordX < 10, NewInputCoordX > 0,
     NewInputCoordY < 10, NewInputCoordY > 0,
     InputCoordX = NewInputCoordX,
@@ -172,14 +172,22 @@ game_over(Board1, Board2, Score, Winner):-
 
 choose_move(AILevel, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, Piece, MoveType, PossibleMoves):-
     (MoveType = 'coords',
-    randomize_number(9, RandomX),
-    InputCoordX is RandomX + 1,
-    randomize_number(9, RandomY),
-    InputCoordY is RandomY + 1)
+    nl,write(PossibleMoves),nl,
+    (((\+var(PossibleMoves)),
+    length(PossibleMoves, Size),
+    randomize_number(Size, MoveNr),
+    nth0(MoveNr, PossibleMoves, PossibleMove),
+    atom_chars(PossibleMove, Move),
+    get_coord(0, Move, InputCoordX), 
+    get_coord(2, Move, InputCoordY));
+    (randomize_number(9, InputCoordX),
+    randomize_number(9, InputCoordY))))
     ;
     (MoveType = 'piece',
+    nl,write('PossibleMoves = '), write(PossibleMoves),nl,
     randomize_number(2, PackUsed),
     ((PackUsed = 0, nth0(0, Pack1, Piece));
      (PackUsed = 1, nth0(0, Pack2, Piece));
-     (PackUsed = 2, nth0(0, Pack3, Piece)))).
+     (PackUsed = 2, nth0(0, Pack3, Piece))),
+     choose_move(AILevel, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, Piece, 'coords', PossibleMoves)).
 
