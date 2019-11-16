@@ -39,7 +39,7 @@ read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
       (Top2 == InputPiece, PackUsed = 2); 
       (Top3 == InputPiece, PackUsed = 3)).
 
-add_moves(InputCoordX, InputCoordY, PossibleMoves, MovesOut):-
+valid_moves(InputCoordX, InputCoordY, PreviousPossibleMoves, PossibleMovesOut):-
     XUp is InputCoordX-1,
     XDown is InputCoordX+1,
     X is InputCoordX,
@@ -71,7 +71,7 @@ add_moves(InputCoordX, InputCoordY, PossibleMoves, MovesOut):-
     atom_concat(InputXDown, ',', NewMove8),
     atom_concat(NewMove8, InputYRight, Move8),
 
-    add_element(Move1, PossibleMoves, NewPMoves1),
+    add_element(Move1, PreviousPossibleMoves, NewPMoves1),
     add_element(Move2, NewPMoves1, NewPMoves2),
     add_element(Move3, NewPMoves2, NewPMoves3),
     add_element(Move4, NewPMoves3, NewPMoves4),
@@ -79,7 +79,7 @@ add_moves(InputCoordX, InputCoordY, PossibleMoves, MovesOut):-
     add_element(Move6, NewPMoves5, NewPMoves6),
     add_element(Move7, NewPMoves6, NewPMoves7),
     add_element(Move8, NewPMoves7, NewPMoves8),
-    MovesOut = NewPMoves8.
+    PossibleMovesOut = NewPMoves8.
 
 verify_moves(N, InputCoordX, InputCoordY, [Move|Others]):-
     N > 0,

@@ -121,12 +121,12 @@ move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, Pos
         (
             Player = 1, 
             set_piece(InputCoordX, InputCoordY, InputPiece, Board1, BoardOut),
-            add_moves(InputCoordX, InputCoordY, PossibleMoves1, MovesOut1)
+            valid_moves(InputCoordX, InputCoordY, PossibleMoves1, MovesOut1)
         );
         (
             Player = 2, 
             set_piece(InputCoordX, InputCoordY, InputPiece, Board2, BoardOut),
-            add_moves(InputCoordX, InputCoordY, PossibleMoves2, MovesOut2)
+            valid_moves(InputCoordX, InputCoordY, PossibleMoves2, MovesOut2)
         )
     ).
 
