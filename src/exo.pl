@@ -137,6 +137,13 @@ play_game(N, Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1,
      (Player = 2, play_game(Next, Board1, BoardOut, Score, Pack1, Pack2, Pack3, NextPlayer, PossibleMoves1, MovesOut2))).
 
 play:-
-    menu(_),
+    menu(Choice),
     init_game(Board1, Board2, Score, _Pack1, _Pack2, _Pack3,  PackOut1, PackOut2, PackOut3, 1),
-    play_game(2, Board1, Board2, Score, PackOut1, PackOut2, PackOut3, 1, _, _).
+    ((Choice = '1', play_pvp(Board1, Board2, Score, PackOut1, PackOut2, PackOut3));
+     play_ai1(Board1, Board2, Score, PackOut1, PackOut2, PackOut3)).
+
+play_pvp(Board1, Board2, Score, Pack1, Pack2, Pack3):-
+    play_game(2, Board1, Board2, Score, Pack1, Pack2, Pack3, 1, _, _).
+
+play_ai1(Board1, Board2, Score, Pack1, Pack2, Pack3):-
+    play_game(2, Board1, Board2, Score, Pack1, Pack2, Pack3, 1, _, _).
