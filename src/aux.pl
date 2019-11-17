@@ -55,39 +55,66 @@ valid_moves(InputCoordX, InputCoordY, PreviousPossibleMoves, PossibleMovesOut):-
     YRight is InputCoordY+1,
     Y is InputCoordY,
 
-    string_number(XDown,InputXDown),
-    string_number(XUp,InputXUp),
-    string_number(X, InputXSame),
-    string_number(YLeft,InputYLeft),
-    string_number(YRight,InputYRight),
-    string_number(Y,InputYSame),
+    update_valid_moves(PreviousPossibleMoves, NewMoves1, Board, XUp, Y),
+    update_valid_moves(NewMoves1, NewMoves2, Board, XUp, YRight),
+    update_valid_moves(NewMoves2, NewMoves3, Board, XUp, YLeft),
+    update_valid_moves(NewMoves3, NewMoves4, Board, XDown, Y),
+    update_valid_moves(NewMoves4, NewMoves5, Board, XDown, YRight),
+    update_valid_moves(NewMoves5, NewMoves6, Board, XDown, YLeft),
+    update_valid_moves(NewMoves6, NewMoves7, Board, X, YRight),
+    update_valid_moves(NewMoves7, PossibleMovesOut, Board, X, YLeft).
 
-    atom_concat(InputXUp, ',', NewMove1),
-    atom_concat(NewMove1, InputYLeft, Move1),
-    atom_concat(InputXUp, ',', NewMove2),
-    atom_concat(NewMove2, InputYSame, Move2),
-    atom_concat(InputXUp, ',', NewMove3),
-    atom_concat(NewMove3, InputYRight, Move3),
-    atom_concat(InputXSame, ',', NewMove4),
-    atom_concat(NewMove4, InputYLeft, Move4),
-    atom_concat(InputXSame, ',', NewMove5),
-    atom_concat(NewMove5, InputYRight, Move5),
-    atom_concat(InputXDown, ',', NewMove6),
-    atom_concat(NewMove6, InputYLeft, Move6),
-    atom_concat(InputXDown, ',', NewMove7),
-    atom_concat(NewMove7, InputYSame, Move7),
-    atom_concat(InputXDown, ',', NewMove8),
-    atom_concat(NewMove8, InputYRight, Move8),
+    %string_number(XDown,InputXDown),
+    %string_number(XUp,InputXUp),
+    %string_number(X, InputXSame),
+    %string_number(YLeft,InputYLeft),
+    %string_number(YRight,InputYRight),
+    %string_number(Y,InputYSame),
+    %atom_concat(InputXUp, ',', NewMove1),
+    %atom_concat(NewMove1, InputYLeft, Move1),
+    %atom_concat(InputXUp, ',', NewMove2),
+    %atom_concat(NewMove2, InputYSame, Move2),
+    %atom_concat(InputXUp, ',', NewMove3),
+    %atom_concat(NewMove3, InputYRight, Move3),
+    %atom_concat(InputXSame, ',', NewMove4),
+    %atom_concat(NewMove4, InputYLeft, Move4),
+    %atom_concat(InputXSame, ',', NewMove5),
+    %atom_concat(NewMove5, InputYRight, Move5),
+    %atom_concat(InputXDown, ',', NewMove6),
+    %atom_concat(NewMove6, InputYLeft, Move6),
+    %atom_concat(InputXDown, ',', NewMove7),
+    %atom_concat(NewMove7, InputYSame, Move7),
+    %atom_concat(InputXDown, ',', NewMove8),
+    %atom_concat(NewMove8, InputYRight, Move8),
 
-    add_element(Move1, PreviousPossibleMoves, NewPMoves1),
-    add_element(Move2, NewPMoves1, NewPMoves2),
-    add_element(Move3, NewPMoves2, NewPMoves3),
-    add_element(Move4, NewPMoves3, NewPMoves4),
-    add_element(Move5, NewPMoves4, NewPMoves5),
-    add_element(Move6, NewPMoves5, NewPMoves6),
-    add_element(Move7, NewPMoves6, NewPMoves7),
-    add_element(Move8, NewPMoves7, NewPMoves8),
-    PossibleMovesOut = NewPMoves8.
+    %add_element(Move1, PreviousPossibleMoves, NewPMoves1),
+    %add_element(Move2, NewPMoves1, NewPMoves2),
+    %add_element(Move3, NewPMoves2, NewPMoves3),
+    %add_element(Move4, NewPMoves3, NewPMoves4),
+    %add_element(Move5, NewPMoves4, NewPMoves5),
+    %add_element(Move6, NewPMoves5, NewPMoves6),
+    %add_element(Move7, NewPMoves6, NewPMoves7),
+    %add_element(Move8, NewPMoves7, NewPMoves8),
+    %PossibleMovesOut = NewPMoves8.
+
+update_valid_moves(PreviousMoves, NewMoves, Board, X, Y):-
+    (get_valid_move(Board, X, Y, Move),
+    add_element(Move, PreviousMoves, NewMoves));
+    NewMoves is PreviousMoves.
+
+get_valid_move(Board, X, Y, Move):-
+    check_empty_place(Board, X, Y),
+    prepare_possible_move(X, Y, Move).
+
+check_empty_place(Board, X, Y):-
+    get_piece(Board, X, Y, Piece),
+    Piece = ' 0 '.
+
+prepare_possible_move(X, Y, Move):-
+    string_number(X,XString),
+    string_number(Y,YString),
+    atom_concat(XString, ',', NewMove),
+    atom_concat(NewMove, YString, Move).
 
 verify_moves(N, InputCoordX, InputCoordY, [Move|Others]):-
     N > 0,

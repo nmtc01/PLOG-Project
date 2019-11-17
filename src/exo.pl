@@ -6,7 +6,8 @@
 :-[menu].
 
 play:-
-    main_menu(Choice, PlayerChoice, AI1Level, AI2Level),
+    repeat,
+    main_menu(Choice, PlayerChoice, AI1Level, AI2Level),!,
     init_game(Board1, Board2, Score, _Pack1, _Pack2, _Pack3,  PackOut1, PackOut2, PackOut3, 1),
     play_game(2, Board1, Board2, Score, PackOut1, PackOut2, PackOut3, 1, _, _, Choice, PlayerChoice, AI1Level, AI2Level).
 
@@ -172,18 +173,14 @@ game_over(Board1, Board2, Score, Winner):-
 
 choose_move(AILevel, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, Piece, MoveType, PossibleMoves):-
     (MoveType = 'coords',
-    nl,write('PossibleMoves = '), write(PossibleMoves),nl,
     (((\+var(PossibleMoves)),
     length(PossibleMoves, Size),
     randomize_number(Size, MoveNr),
     nth0(MoveNr, PossibleMoves, PossibleMove),
-    write('Move usado = '), write(PossibleMove),nl,
     atom_chars(PossibleMove, Move),
     get_coord(0, Move, InputCoordX), 
-    get_coord(2, Move, InputCoordY),
-    write('InputCoordX = \n'), write(InputCoordX),nl,
-    write('InputCoordY = \n'), write(InputCoordY),nl);
-    (randomize_number(9, InputCoordX),write('fuck'),nl,
+    get_coord(2, Move, InputCoordY));
+    (randomize_number(9, InputCoordX),
     randomize_number(9, InputCoordY))))
     ;
     (MoveType = 'piece',
