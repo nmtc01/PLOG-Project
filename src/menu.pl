@@ -1,12 +1,12 @@
 :-[stringnumber].
 
 main_menu(Choice, PlayerChoice, AI1Level, AI2Level):-
-    write('Welcome to our game! Choose 1 to play P vs P, 2 for P vs AI or 3 for AI vs AI\n'),
+    write('Welcome to our game!\nChoose\n1 to play Player vs Player\n2 for Player vs AI\n3 for AI vs AI\n'),
     read_line(Line),
     nth0(0, Line, ChoiceCode),
     char_code(CharChoice, ChoiceCode),
     string_number(Choice, CharChoice),
-    sub_menu(Choice, PlayerChoice, AILevel1, AI2Level).
+    sub_menu(Choice, PlayerChoice, AI1Level, AI2Level).
 
 sub_menu(Choice, PlayerChoice, AI1Level, AI2Level):-
     (Choice = 1, write('Playing Player vs Player'), nl)

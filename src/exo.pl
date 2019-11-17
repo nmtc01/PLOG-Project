@@ -29,13 +29,21 @@ play_game(N, Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1,
 place_star(Board1, Board2, BoardOut, Player, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2, Choice, PlayerChoice, AI1Level, AI2Level):-
     write('Choose a place for your star\n'),
     (
-        ((Choice = 1 ; PlayerChoice = Player), 
+        ((Choice = 1 ; PlayerChoice == Player), 
             handle_coords(InputCoordX, InputCoordY))
         ;
         (Choice = 2,
             (
                 (PlayerChoice = 1, choose_move(AI2Level, InputCoordX, InputCoordY,_,_,_,_, _, 'coords',_));
                 (PlayerChoice = 2, choose_move(AI1Level, InputCoordX, InputCoordY,_,_,_,_, _, 'coords',_))
+            )
+        );
+        (Choice = 3,
+         write('Press Enter'),nl,
+         get_char(_),
+            (
+                (Player = 1, choose_move(AI1Level, InputCoordX, InputCoordY,_,_,_,_, _, 'coords',_));
+                (Player = 2, choose_move(AI2Level, InputCoordX, InputCoordY,_,_,_,_, _, 'coords',_))
             )
         )
     ),
@@ -52,7 +60,7 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
     ((
         Player = 1,
         (
-            ((Choice = 1 ; PlayerChoice = Player), 
+            ((Choice = 1 ; PlayerChoice == Player), 
                 handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves1))
             ;
             (Choice = 2,
@@ -60,6 +68,12 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
                     (PlayerChoice = 1, choose_move(AI2Level, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, PackUsed, InputPiece, 'piece', PossibleMoves1));
                     (PlayerChoice = 2, choose_move(AI1Level, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, PackUsed, InputPiece, 'piece', PossibleMoves1))
                 )
+            )
+            ;
+            (Choice = 3,
+             write('Press Enter'),nl,
+             get_char(_),
+             choose_move(AI1Level, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, PackUsed, InputPiece, 'piece', PossibleMoves1)
             )
         ), 
         move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
@@ -83,7 +97,7 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
      (
         Player = 2, 
         (
-            ((Choice = 1 ; PlayerChoice = Player), 
+            ((Choice = 1 ; PlayerChoice == Player), 
                 handle_in_out(Pack1, Pack2, Pack3, InputCoordX, InputCoordY,InputPiece, PackUsed, PossibleMoves2))
             ;
             (Choice = 2,
@@ -91,6 +105,12 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
                     (PlayerChoice = 1, choose_move(AI2Level, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, PackUsed, InputPiece, 'piece', PossibleMoves2));
                     (PlayerChoice = 2, choose_move(AI1Level, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, PackUsed, InputPiece, 'piece', PossibleMoves2))
                 )
+            )
+            ;
+            (Choice = 3,
+             write('Press Enter'),nl,
+             get_char(_),
+             choose_move(AI2Level, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, PackUsed, InputPiece, 'piece', PossibleMoves2)
             )
         ),
         move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
@@ -179,13 +199,14 @@ choose_move(AILevel, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, PackUsed, Pi
     atom_chars(PossibleMove, Move),
     get_coord(0, Move, InputCoordX), 
     get_coord(2, Move, InputCoordY));
-    (random(1, 9, InputCoordX),
-    random(1, 9, InputCoordY))))
+    (random(1, 10, InputCoordX),
+    random(1, 10, InputCoordY))))
     ;
     (MoveType = 'piece',
-    random(1, 3, PackUsed),
+    repeat,
+    random(1, 4, PackUsed),
     ((PackUsed = 1, nth0(0, Pack1, Piece));
      (PackUsed = 2, nth0(0, Pack2, Piece));
-     (PackUsed = 3, nth0(0, Pack3, Piece))),
+     (PackUsed = 3, nth0(0, Pack3, Piece))),!,
      choose_move(AILevel, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, PackUsed, Piece, 'coords', PossibleMoves)).
 
