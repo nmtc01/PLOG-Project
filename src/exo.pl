@@ -41,7 +41,7 @@ place_star(Board1, Board2, BoardOut, Player, PossibleMoves1, MovesOut1, Possible
         (Choice = 3,
          write('Press Enter'),nl,
          get_char(_),
-            (move
+            (
                 (Player = 1, choose_move(AI1Level, InputCoordX, InputCoordY,_,_,_,_, _, 'coords',_));
                 (Player = 2, choose_move(AI2Level, InputCoordX, InputCoordY,_,_,_,_, _, 'coords',_))
             )
