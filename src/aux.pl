@@ -54,7 +54,7 @@ valid_moves(Board, InputCoordX, InputCoordY, PreviousPossibleMoves, PossibleMove
     YLeft is InputCoordY-1,
     YRight is InputCoordY+1,
     Y is InputCoordY,
-
+    
     update_valid_moves(PreviousPossibleMoves, NewMoves1, Board, XUp, Y),
     update_valid_moves(NewMoves1, NewMoves2, Board, XUp, YRight),
     update_valid_moves(NewMoves2, NewMoves3, Board, XUp, YLeft),
@@ -75,8 +75,7 @@ get_valid_move(Board, X, Y, Move):-
     prepare_possible_move(X, Y, Move).
 
 check_empty_place(Board, X, Y):-
-    get_piece(Board, X, Y, Piece),
-    write('no check empty place, piece = '),write(Piece),nl,
+    get_piece(Board, X, Y, Piece),!,
     Piece == ' 0 '.
 
 prepare_possible_move(X, Y, Move):-
@@ -86,7 +85,6 @@ prepare_possible_move(X, Y, Move):-
     atom_concat(NewMove, YString, Move).
 
 delete_move_from_valid(X, Y, PreviousMoves, NewMoves):-
-    write('entrei no delete'),nl,
     string_number(X, XString),
     string_number(Y, YString),
     atom_concat(XString, ',', CoordsX),
@@ -109,7 +107,7 @@ verify_moves(N, InputCoordX, InputCoordY, [Move|Others]):-
 get_piece(Board, InputCoordX, InputCoordY, Piece):-
     (InputCoordX > 0, InputCoordX < 10, InputCoordY > 0, InputCoordY < 10,
     (get_in_line(InputCoordX, InputCoordY, Piece, Board);
-    (write('no get_piece pus piece a 0'),Piece = ' 0 ')));
+    Piece = ' 0 '));
     Piece = 'e'.
 
 get_in_line(1, InputCoordY, Piece, [InputCoordX| _]):-
@@ -121,7 +119,6 @@ get_in_line(N, InputCoordY, Piece, [_| Others]):-
     get_in_line(Next, InputCoordY, Piece, Others).
 
 get_in_column(1, Piece, [Element|_]):-
-    write('in get_in_column, Element = '),write(Element),nl,
     (\+(var(Element))),
     Piece = Element.
 
