@@ -1,5 +1,6 @@
 :-[stringnumber].
 
+%displays a menu on the screen. the player can choose to play either against another player, against the computer or to watch AI vs AI. The user should input either 1, 2 or 3 to choose a game mode.
 main_menu(Choice, PlayerChoice, AI1Level, AI2Level):-
     write('Welcome to our game!\nChoose\n1 to play Player vs Player\n2 for Player vs AI\n3 for AI vs AI\n'),
     read_line(Line),
@@ -8,6 +9,7 @@ main_menu(Choice, PlayerChoice, AI1Level, AI2Level):-
     string_number(Choice, CharChoice),
     sub_menu(Choice, PlayerChoice, AI1Level, AI2Level).
 
+%after choosing an option, if AI is chosen, the player must choose which player they want to be
 sub_menu(Choice, PlayerChoice, AI1Level, AI2Level):-
     (Choice = 1, write('Playing Player vs Player'), nl)
     ;
@@ -21,7 +23,8 @@ sub_menu(Choice, PlayerChoice, AI1Level, AI2Level):-
       (PlayerChoice = 2, ailevel_menu(AI1Level))))
     ;
     (ailevel_menu(AI1Level), ailevel_menu(AI2Level)).
-    
+
+%similarly, after choosing the player, you can also choose the level of difficulty of the AI (either 1 or 2)    
 ailevel_menu(AILevel):-
     write('Choose the level\n'),
     read_line(LineAILevel),
