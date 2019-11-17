@@ -66,7 +66,6 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         nth0(0, Score, Points),
         verify_combination(Board1, InputCoordX, InputCoordY, InputPiece, Points, PointsOut),
         set_score(Player, PointsOut, Score, ScoreOut),
-        
         X is InputCoordX,
         Y is InputCoordY,
         string_number(X, InputXSame),

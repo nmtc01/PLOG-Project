@@ -67,11 +67,10 @@ valid_moves(InputCoordX, InputCoordY, PreviousPossibleMoves, PossibleMovesOut):-
 update_valid_moves(PreviousMoves, NewMoves, Board, X, Y):-
     (get_valid_move(Board, X, Y, Move),
     add_element(Move, PreviousMoves, NewMoves));
-    NewMoves is PreviousMoves.
+    NewMoves = PreviousMoves.
 
 get_valid_move(Board, X, Y, Move):-
     check_empty_place(Board, X, Y),
-    write('ola'),nl,
     prepare_possible_move(X, Y, Move).
 
 check_empty_place(Board, X, Y):-
@@ -98,7 +97,8 @@ verify_moves(N, InputCoordX, InputCoordY, [Move|Others]):-
      verify_moves(Next, InputCoordX, InputCoordY, Others))).
 
 get_piece(Board, InputCoordX, InputCoordY, Piece):-
-    get_in_line(InputCoordX, InputCoordY, Piece, Board);
+    (InputCoordX > 0, InputCoordX < 10, InputCoordY > 0, InputCoordY < 10,
+    get_in_line(InputCoordX, InputCoordY, Piece, Board));
     Piece = ' 0 '.
 
 get_in_line(1, InputCoordY, Piece, [InputCoordX| _]):-
