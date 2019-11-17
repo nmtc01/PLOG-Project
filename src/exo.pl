@@ -218,7 +218,7 @@ choose_move(Board, Pack1, Pack2, Pack3, PossibleMoves, AILevel, InputCoordX, Inp
         choose_move(Board, Pack1, Pack2, Pack3, PossibleMoves, 1, InputCoordX, InputCoordY, PackUsed, Piece, 'coords'))
         ;
         (MoveType = 'piece',
-            (get_best_move(Board, Pack1, Pack2, Pack3, PackUsed, PossibleMoves, Player, InputCoordX, InputCoordY, Piece)
+            (get_best_move(Board, Pack1, Pack2, Pack3, PackUsed, PossibleMoves, _, InputCoordX, InputCoordY, Piece)
             ;
             (choose_move(Board, Pack1, Pack2, Pack3, PossibleMoves, 1, InputCoordX, InputCoordY, PackUsed, Piece, 'piece')))))
     ).
