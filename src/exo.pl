@@ -80,6 +80,7 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
         nth0(0, Score, Points),
         verify_combination(Board1, InputCoordX, InputCoordY, InputPiece, Points, PointsOut),
         set_score(Player, PointsOut, Score, ScoreOut),
+
         X is InputCoordX,
         Y is InputCoordY,
         string_number(X, InputXSame),
@@ -191,23 +192,49 @@ game_over(Board1, Board2, Score, Winner):-
     get_winner(Score, Winner).
 
 choose_move(AILevel, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, PackUsed, Piece, MoveType, PossibleMoves):-
-    (MoveType = 'coords',
-    (((\+var(PossibleMoves)),
-    length(PossibleMoves, Size),
-    randomize_number(Size, MoveNr),
-    nth0(MoveNr, PossibleMoves, PossibleMove),
-    atom_chars(PossibleMove, Move),
-    get_coord(0, Move, InputCoordX), 
-    get_coord(2, Move, InputCoordY));
-    (var(PossibleMoves),
-    random(1, 10, InputCoordX),
-    random(1, 10, InputCoordY))))
-    ;
-    (MoveType = 'piece',
-    repeat,
-    random(1, 4, PackUsed),
-    ((PackUsed = 1, nth0(0, Pack1, Piece));
-     (PackUsed = 2, nth0(0, Pack2, Piece));
-     (PackUsed = 3, nth0(0, Pack3, Piece))),!,
-     choose_move(AILevel, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, PackUsed, Piece, 'coords', PossibleMoves)).
+    (AILevel = 1,
+        (MoveType = 'coords',
+        (((\+var(PossibleMoves)),
+        length(PossibleMoves, Size),
+        randomize_number(Size, MoveNr),
+        nth0(MoveNr, PossibleMoves, PossibleMove),
+        atom_chars(PossibleMove, Move),
+        get_coord(0, Move, InputCoordX), 
+        get_coord(2, Move, InputCoordY));
+        (var(PossibleMoves),
+        random(1, 10, InputCoordX),
+        random(1, 10, InputCoordY))))
+        ;
+        (MoveType = 'piece',
+        repeat,
+        random(1, 4, PackUsed),
+        ((PackUsed = 1, nth0(0, Pack1, Piece));
+        (PackUsed = 2, nth0(0, Pack2, Piece));
+        (PackUsed = 3, nth0(0, Pack3, Piece))),!,
+        choose_move(AILevel, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, PackUsed, Piece, 'coords', PossibleMoves))
+    );
+    (AILevel = 2,
+        (MoveType = 'coords',
+        (((\+var(PossibleMoves)),
+        length(PossibleMoves, Size),
+        randomize_number(Size, MoveNr),
+        nth0(MoveNr, PossibleMoves, PossibleMove),
+        atom_chars(PossibleMove, Move),
+        get_coord(0, Move, InputCoordX), 
+        get_coord(2, Move, InputCoordY));
+        (var(PossibleMoves),
+        random(1, 10, InputCoordX),
+        random(1, 10, InputCoordY))))
+        ;
+        (MoveType = 'piece',write('to be continued\n')
+        )
+    ).
+
+
+
+value(Board1, Board2, X, Y, PossibleMoves1, PossibleMoves2, Piece, Player, Value):-
+    move(Player, X, Y, Piece, Board1, Board2, _, PossibleMoves1, _, PossibleMoves2, _),
+    nth0(0, Score, Points),
+    verify_combination(Board1, X, Y, Piece, Points, Value).
+
 

@@ -23,11 +23,13 @@ sub_menu(Choice, PlayerChoice, AI1Level, AI2Level):-
     (ailevel_menu(AI1Level), ailevel_menu(AI2Level)).
     
 ailevel_menu(AILevel):-
+    repeat,
     write('Choose the level\n'),
     read_line(LineAILevel),
     nth0(0, LineAILevel, AILevelCode),
     char_code(AILevelChar, AILevelCode),
-    string_number(AILevel, AILevelChar).
+    string_number(AILevel, AILevelChar),
+    (AILevel = 1; AILevel=2),!.
 
 
 
