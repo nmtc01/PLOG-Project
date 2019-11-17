@@ -68,7 +68,7 @@ valid_moves(Board, InputCoordX, InputCoordY, PreviousPossibleMoves, PossibleMove
     update_valid_moves(NewMoves6, NewMoves7, Board, X, YRight),
     update_valid_moves(NewMoves7, PossibleMovesOut, Board, X, YLeft).
 
-%updates the list of valid moves - checks if a certain move is valid, and, if it is, adds it to the list of moves and deletes it from the valid moves so it is not used again
+%updates the list of valid moves - checks if a certain move is valid, and, if it is, adds it to the list of moves. otherwise, deletes it
 update_valid_moves(PreviousMoves, NewMoves, Board, X, Y):-
     (get_valid_move(Board, X, Y, Move),
     add_element(Move, PreviousMoves, NewMoves));
@@ -92,7 +92,7 @@ prepare_possible_move(X, Y, Move):-
     atom_concat(XString, ',', NewMove),
     atom_concat(NewMove, YString, Move).
 
-%deletes a move from the list of valid moves, because it has already been used
+%deletes a move from the list of valid moves
 delete_move_from_valid(X, Y, PreviousMoves, NewMoves):-
     string_number(X, XString),
     string_number(Y, YString),
