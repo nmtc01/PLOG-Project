@@ -97,9 +97,9 @@ verify_moves(N, InputCoordX, InputCoordY, [Move|Others]):-
      verify_moves(Next, InputCoordX, InputCoordY, Others))).
 
 get_piece(Board, InputCoordX, InputCoordY, Piece):-
-    (InputCoordX > 0, InputCoordX < 10, InputCoordY > 0, InputCoordY < 10,
-    get_in_line(InputCoordX, InputCoordY, Piece, Board));
-    Piece = ' 0 '.
+    InputCoordX > 0, InputCoordX < 10, InputCoordY > 0, InputCoordY < 10,
+    (get_in_line(InputCoordX, InputCoordY, Piece, Board);
+    Piece = ' 0 ').
 
 get_in_line(1, InputCoordY, Piece, [InputCoordX| _]):-
     get_in_column(InputCoordY, Piece, InputCoordX).
@@ -117,10 +117,14 @@ get_in_column(N, Piece, [_|Others]):-
     get_in_column(Next, Piece, Others).
 
 get_piece_attributes(Piece, Color, Size, Type):-
+    ((\+(var(Piece))),
     atom_chars(Piece, Attr),
     nth0(0, Attr, Color),
     nth0(1, Attr, Size),
-    nth0(2, Attr, Type).
+    nth0(2, Attr, Type));
+    (Color = 'e',
+    Size = 'e',
+    Type = 'e').
 
 verify_combination(Board, X, Y, Piece, Score, ScoreOut):-
     XDown is X+1,
@@ -131,22 +135,22 @@ verify_combination(Board, X, Y, Piece, Score, ScoreOut):-
     YRightRight is Y+2,
     YLeft is Y-1,
     YLeftLeft is Y-2,
-    get_piece(Board, XDown, Y, Piece1),
-    get_piece(Board, XDown, YLeft, Piece2),
-    get_piece(Board, X, YLeft, Piece3),
-    get_piece(Board, XUp, YLeft, Piece4),
-    get_piece(Board, XUp, Y, Piece5),
-    get_piece(Board, XUp, YRight, Piece6),
-    get_piece(Board, X, YRight, Piece7),
-    get_piece(Board, XDown, YRight, Piece8),
-    get_piece(Board, XDownDown, Y, Piece9),
-    get_piece(Board, XDownDown, YLeftLeft, Piece10),
-    get_piece(Board, X, YLeftLeft, Piece11),
-    get_piece(Board, XUpUp, YLeftLeft, Piece12),
-    get_piece(Board, XUpUp, Y, Piece13),
-    get_piece(Board, XUpUp, YRightRight, Piece14),
-    get_piece(Board, X, YRightRight, Piece15),
-    get_piece(Board, XDownDown, YRightRight, Piece16),
+    (get_piece(Board, XDown, Y, Piece1);
+    get_piece(Board, XDown, YLeft, Piece2);
+    get_piece(Board, X, YLeft, Piece3);
+    get_piece(Board, XUp, YLeft, Piece4);
+    get_piece(Board, XUp, Y, Piece5);
+    get_piece(Board, XUp, YRight, Piece6);
+    get_piece(Board, X, YRight, Piece7);
+    get_piece(Board, XDown, YRight, Piece8);
+    get_piece(Board, XDownDown, Y, Piece9);
+    get_piece(Board, XDownDown, YLeftLeft, Piece10);
+    get_piece(Board, X, YLeftLeft, Piece11);
+    get_piece(Board, XUpUp, YLeftLeft, Piece12);
+    get_piece(Board, XUpUp, Y, Piece13);
+    get_piece(Board, XUpUp, YRightRight, Piece14);
+    get_piece(Board, X, YRightRight, Piece15);
+    get_piece(Board, XDownDown, YRightRight, Piece16)),
 
     verify_piece_combination(Piece, Piece1, Piece9, Score, ScoreOut1),
     verify_piece_combination(Piece, Piece2, Piece10, ScoreOut1, ScoreOut2),
@@ -160,12 +164,11 @@ verify_combination(Board, X, Y, Piece, Score, ScoreOut):-
 check_matching_attr(Attr1, Attr2, Attr3, Score, ScoreOut):-
     (verify_attribute_combination(Attr1, Attr2),
     verify_attribute_combination(Attr2, Attr3),
-    ScoreOut is Score+1);
-    ScoreOut is Score.
+    ScoreOut = Score+1);
+    ScoreOut = Score.
 
 verify_piece_combination(Piece1, Piece2, Piece3, Score, ScoreOut):-
     get_piece_attributes(Piece1, Color1, Size1, Type1),
-    
     get_piece_attributes(Piece2, Color2, Size2, Type2),
     get_piece_attributes(Piece3, Color3, Size3, Type3),
     check_matching_attr(Color1, Color2, Color3, Score, NewScoreOut1),
