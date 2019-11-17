@@ -34,16 +34,16 @@ place_star(Board1, Board2, BoardOut, Player, PossibleMoves1, MovesOut1, Possible
         ;
         (Choice = 2,
             (
-                (PlayerChoice = 1, choose_move(_,_,_,_,_,_,_,AI2Level, InputCoordX, InputCoordY,_, _, 'coords',_));
-                (PlayerChoice = 2, choose_move(_,_,_,_,_,_,_,AI1Level, InputCoordX, InputCoordY,_, _, 'coords',_))
+                (PlayerChoice = 1, choose_move(_,_,_,_,_,AI2Level, InputCoordX, InputCoordY,_, _, 'coords'));
+                (PlayerChoice = 2, choose_move(_,_,_,_,_,AI1Level, InputCoordX, InputCoordY,_, _, 'coords'))
             )
         );
         (Choice = 3,
          write('Press Enter'),nl,
          get_char(_),
             (
-                (Player = 1, choose_move(_,_,_,_,_,_,_,AI1Level, InputCoordX, InputCoordY,_, _, 'coords',_));
-                (Player = 2, choose_move(_,_,_,_,_,_,_,AI2Level, InputCoordX, InputCoordY,_, _, 'coords',_))
+                (Player = 1, choose_move(_,_,_,_,_,AI1Level, InputCoordX, InputCoordY,_, _, 'coords'));
+                (Player = 2, choose_move(_,_,_,_,_,AI2Level, InputCoordX, InputCoordY,_, _, 'coords'))
             )
         )
     ),
@@ -65,15 +65,15 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
             ;
             (Choice = 2,
                 (
-                    (PlayerChoice = 1, choose_move(Board1, Board2, Pack1, Pack2, Pack3, PossibleMoves1, PossibleMoves2, AI2Level, InputCoordX, InputCoordY, PackUsed, InputPiece, 'piece', PossibleMoves1));
-                    (PlayerChoice = 2, choose_move(Board1, Board2, Pack1, Pack2, Pack3, PossibleMoves1, PossibleMoves2, AI1Level, InputCoordX, InputCoordY, PackUsed, InputPiece, 'piece', PossibleMoves1))
+                    (PlayerChoice = 1, choose_move(Board1, Pack1, Pack2, Pack3, PossibleMoves1, AI2Level, InputCoordX, InputCoordY, PackUsed, InputPiece, 'piece'));
+                    (PlayerChoice = 2, choose_move(Board1, Pack1, Pack2, Pack3, PossibleMoves1, AI1Level, InputCoordX, InputCoordY, PackUsed, InputPiece, 'piece'))
                 )
             )
             ;
             (Choice = 3,
              write('Press Enter'),nl,
              get_char(_),
-             choose_move(Board1, Board2, Pack1, Pack2, Pack3, PossibleMoves1, PossibleMoves2, AI1Level, InputCoordX, InputCoordY, PackUsed, InputPiece, 'piece', PossibleMoves1)
+             choose_move(Board1, Pack1, Pack2, Pack3, PossibleMoves1, AI1Level, InputCoordX, InputCoordY, PackUsed, InputPiece, 'piece')
             )
         ), 
         move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
@@ -103,15 +103,15 @@ loop(Board1, Board2, Score, Pack1, Pack2, Pack3, Player, PossibleMoves1, Possibl
             ;
             (Choice = 2,
                 (
-                    (PlayerChoice = 1, choose_move(Board1, Board2, Pack1, Pack2, Pack3, PossibleMoves1, PossibleMoves2, AI2Level, InputCoordX, InputCoordY, PackUsed, InputPiece, 'piece', PossibleMoves2));
-                    (PlayerChoice = 2, choose_move(Board1, Board2, Pack1, Pack2, Pack3, PossibleMoves1, PossibleMoves2, AI1Level, InputCoordX, InputCoordY, PackUsed, InputPiece, 'piece', PossibleMoves2))
+                    (PlayerChoice = 1, choose_move(Board2, Pack1, Pack2, Pack3, PossibleMoves2, AI2Level, InputCoordX, InputCoordY, PackUsed, InputPiece, 'piece'));
+                    (PlayerChoice = 2, choose_move(Board2, Pack1, Pack2, Pack3, PossibleMoves2, AI1Level, InputCoordX, InputCoordY, PackUsed, InputPiece, 'piece'))
                 )
             )
             ;
             (Choice = 3,
              write('Press Enter'),nl,
              get_char(_),
-             choose_move(Board1, Board2, Pack1, Pack2, Pack3, PossibleMoves1, PossibleMoves2, AI2Level, InputCoordX, InputCoordY, PackUsed, InputPiece, 'piece', PossibleMoves2)
+             choose_move(Board2, Pack1, Pack2, Pack3, PossibleMoves2, AI2Level, InputCoordX, InputCoordY, PackUsed, InputPiece, 'piece')
             )
         ),
         move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, PossibleMoves1, MovesOut1, PossibleMoves2, MovesOut2),
@@ -191,7 +191,7 @@ game_over(Board1, Board2, Score, Winner):-
     display_boards(0, Board1, Board2),
     get_winner(Score, Winner).
 
-choose_move(Board1, Board2, Pack1, Pack2, Pack3, PossibleMoves1, PossibleMoves2, AILevel, InputCoordX, InputCoordY, PackUsed, Piece, MoveType, PossibleMoves):-
+choose_move(Board, Pack1, Pack2, Pack3, PossibleMoves, AILevel, InputCoordX, InputCoordY, PackUsed, Piece, MoveType):-
     (AILevel = 1, 
         (MoveType = 'coords',
         (((\+var(PossibleMoves)),
@@ -211,41 +211,34 @@ choose_move(Board1, Board2, Pack1, Pack2, Pack3, PossibleMoves1, PossibleMoves2,
         ((PackUsed = 1, nth0(0, Pack1, Piece));
         (PackUsed = 2, nth0(0, Pack2, Piece));
         (PackUsed = 3, nth0(0, Pack3, Piece))),!,
-        choose_move(Board1, Board2, Pack1, Pack2, Pack3, PossibleMoves1, PossibleMoves2, AILevel, InputCoordX, InputCoordY, PackUsed, Piece, 'coords', PossibleMoves)))
+        choose_move(Board, Pack1, Pack2, Pack3, PossibleMoves, AILevel, InputCoordX, InputCoordY, PackUsed, Piece, 'coords')))
     );
     (AILevel = 2,
         ((MoveType = 'coords',
-        choose_move(Board1, Board2, Pack1, Pack2, Pack3, PossibleMoves1, PossibleMoves2, 1, InputCoordX, InputCoordY, PackUsed, Piece, 'coords', PossibleMoves))
+        choose_move(Board, Pack1, Pack2, Pack3, PossibleMoves, 1, InputCoordX, InputCoordY, PackUsed, Piece, 'coords'))
         ;
         (MoveType = 'piece',
-            (get_best_move(Board1, Board2, Pack1, Pack2, Pack3, PackUsed, PossibleMoves1, PossibleMoves2, _, InputCoordX, InputCoordY, Piece)
+            (get_best_move(Board, Pack1, Pack2, Pack3, PackUsed, PossibleMoves, Player, InputCoordX, InputCoordY, Piece)
             ;
-            (choose_move(Board1, Board2, Pack1, Pack2, Pack3, PossibleMoves1, PossibleMoves2, 1, InputCoordX, InputCoordY, PackUsed, Piece, 'piece', PossibleMoves)))))
+            (choose_move(Board, Pack1, Pack2, Pack3, PossibleMoves, 1, InputCoordX, InputCoordY, PackUsed, Piece, 'piece')))))
     ).
 
-get_best_move(Board1, Board2, Pack1, Pack2, Pack3, PackUsed, PossibleMoves1, PossibleMoves2, Player, BestX, BestY, BestPiece):-
+get_best_move(Board, Pack1, Pack2, Pack3, PackUsed, PossibleMoves, Player, BestX, BestY, BestPiece):-
     (nth0(0, Pack1, Piece1);Piece1=' 0 '),
     (nth0(0, Pack2, Piece2);Piece2=' 0 '),
     (nth0(0, Pack3, Piece3);Piece3=' 0 '),
-    get_best_move_for_piece(Board1, Board2, PossibleMoves1, PossibleMoves2, Piece1, Player, 0, _, _, Best1X, Best1Y, Best1Value),!,
-    get_best_move_for_piece(Board1, Board2, PossibleMoves1, PossibleMoves2, Piece2, Player, 0, _, _, Best2X, Best2Y, Best2Value),!,
-    get_best_move_for_piece(Board1, Board2, PossibleMoves1, PossibleMoves2, Piece3, Player, 0, _, _, Best3X, Best3Y, Best3Value),!,
+    get_best_move_for_piece(Board, PossibleMoves, Piece1, Player, 0, _, _, Best1X, Best1Y, Best1Value),!,
+    get_best_move_for_piece(Board, PossibleMoves, Piece2, Player, 0, _, _, Best2X, Best2Y, Best2Value),!,
+    get_best_move_for_piece(Board, PossibleMoves, Piece3, Player, 0, _, _, Best3X, Best3Y, Best3Value),!,
     (
         (Best1Value > Best2Value, Best1Value > Best3Value, BestX = Best1X, BestY = Best1Y, BestPiece = Piece1, PackUsed = 1);
         (Best2Value > Best1Value, Best2Value > Best3Value, BestX = Best2X, BestY = Best2Y, BestPiece = Piece2, PackUsed = 2);
         (Best3Value > Best2Value, Best3Value > Best1Value, BestX = Best3X, BestY = Best3Y, BestPiece = Piece3, PackUsed = 3)
     ).
 
-get_best_move_for_piece(Board1, Board2, PossibleMoves1, PossibleMoves2, Piece, Player, InitialValue, InitialX, InitialY, BestX, BestY, BestValue):-
-    (
-        (Player = 1, 
-        length(PossibleMoves1, N),
-        get_best_value(N, Board1, PossibleMoves1, PossibleMoves1, Piece, Player, InitialValue, InitialX, InitialY, BestX, BestY, BestValue))
-        ;
-        (Player = 2, 
-        length(PossibleMoves2, N),
-        get_best_value(N, Board2, PossibleMoves2, PossibleMoves2, Piece, Player, InitialValue, InitialX, InitialY, BestX, BestY, BestValue))
-    ).
+get_best_move_for_piece(Board, PossibleMoves, Piece, Player, InitialValue, InitialX, InitialY, BestX, BestY, BestValue):-
+    length(PossibleMoves, N),
+    get_best_value(N, Board, PossibleMoves, PossibleMoves, Piece, Player, InitialValue, InitialX, InitialY, BestX, BestY, BestValue).
 
 get_best_value(1, _, _, _, _, _, Value, X, Y, BestX, BestY, BestValue):-
     BestX = X, 
