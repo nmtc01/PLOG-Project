@@ -163,12 +163,12 @@ move(Player, InputCoordX, InputCoordY, InputPiece, Board1, Board2, BoardOut, Pos
         (
             Player = 1, 
             set_piece(InputCoordX, InputCoordY, InputPiece, Board1, BoardOut),
-            valid_moves(InputCoordX, InputCoordY, PossibleMoves1, MovesOut1)
+            valid_moves(Board1, InputCoordX, InputCoordY, PossibleMoves1, MovesOut1)
         );
         (
             Player = 2, 
             set_piece(InputCoordX, InputCoordY, InputPiece, Board2, BoardOut),
-            valid_moves(InputCoordX, InputCoordY, PossibleMoves2, MovesOut2)
+            valid_moves(Board2, InputCoordX, InputCoordY, PossibleMoves2, MovesOut2)
         )
     ).
 
@@ -199,7 +199,8 @@ choose_move(AILevel, InputCoordX, InputCoordY, Pack1, Pack2, Pack3, PackUsed, Pi
     atom_chars(PossibleMove, Move),
     get_coord(0, Move, InputCoordX), 
     get_coord(2, Move, InputCoordY));
-    (random(1, 10, InputCoordX),
+    (var(PossibleMoves),
+    random(1, 10, InputCoordX),
     random(1, 10, InputCoordY))))
     ;
     (MoveType = 'piece',

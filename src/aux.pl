@@ -47,7 +47,7 @@ read_piece(Pack1, Pack2, Pack3, InputPiece, PackUsed):-
       (Top2 == InputPiece, PackUsed = 2); 
       (Top3 == InputPiece, PackUsed = 3)).
 
-valid_moves(InputCoordX, InputCoordY, PreviousPossibleMoves, PossibleMovesOut):-
+valid_moves(Board, InputCoordX, InputCoordY, PreviousPossibleMoves, PossibleMovesOut):-
     XUp is InputCoordX-1,
     XDown is InputCoordX+1,
     X is InputCoordX,
@@ -67,6 +67,7 @@ valid_moves(InputCoordX, InputCoordY, PreviousPossibleMoves, PossibleMovesOut):-
 update_valid_moves(PreviousMoves, NewMoves, Board, X, Y):-
     (get_valid_move(Board, X, Y, Move),
     add_element(Move, PreviousMoves, NewMoves));
+    delete_move_from_valid(X, Y, PreviousMoves, NewMoves);
     NewMoves = PreviousMoves.
 
 get_valid_move(Board, X, Y, Move):-
@@ -75,13 +76,22 @@ get_valid_move(Board, X, Y, Move):-
 
 check_empty_place(Board, X, Y):-
     get_piece(Board, X, Y, Piece),
-    Piece = ' 0 '.
+    write('no check empty place, piece = '),write(Piece),nl,
+    Piece == ' 0 '.
 
 prepare_possible_move(X, Y, Move):-
     string_number(X,XString),
     string_number(Y,YString),
     atom_concat(XString, ',', NewMove),
     atom_concat(NewMove, YString, Move).
+
+delete_move_from_valid(X, Y, PreviousMoves, NewMoves):-
+    write('entrei no delete'),nl,
+    string_number(X, XString),
+    string_number(Y, YString),
+    atom_concat(XString, ',', CoordsX),
+    atom_concat(CoordsX, YString, Coords),
+    delete(PreviousMoves, Coords, NewMoves).
 
 verify_moves(N, InputCoordX, InputCoordY, [Move|Others]):-
     N > 0,
@@ -99,17 +109,20 @@ verify_moves(N, InputCoordX, InputCoordY, [Move|Others]):-
 get_piece(Board, InputCoordX, InputCoordY, Piece):-
     (InputCoordX > 0, InputCoordX < 10, InputCoordY > 0, InputCoordY < 10,
     (get_in_line(InputCoordX, InputCoordY, Piece, Board);
-    Piece = ' 0 '));
+    (write('no get_piece pus piece a 0'),Piece = ' 0 ')));
     Piece = 'e'.
 
 get_in_line(1, InputCoordY, Piece, [InputCoordX| _]):-
     get_in_column(InputCoordY, Piece, InputCoordX).
 
 get_in_line(N, InputCoordY, Piece, [_| Others]):-
+    N > 1,
     Next is N-1,
     get_in_line(Next, InputCoordY, Piece, Others).
 
 get_in_column(1, Piece, [Element|_]):-
+    write('in get_in_column, Element = '),write(Element),nl,
+    (\+(var(Element))),
     Piece = Element.
 
 get_in_column(N, Piece, [_|Others]):-
