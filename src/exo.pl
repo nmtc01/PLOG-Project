@@ -261,8 +261,15 @@ get_best_move(Board, Pack1, Pack2, Pack3, PackUsed, PossibleMoves, Player, BestX
     (
         (Best1Value > Best2Value, Best1Value > Best3Value, BestX = Best1X, BestY = Best1Y, BestPiece = Piece1, PackUsed = 1);
         (Best2Value > Best1Value, Best2Value > Best3Value, BestX = Best2X, BestY = Best2Y, BestPiece = Piece2, PackUsed = 2);
-        (Best3Value > Best2Value, Best3Value > Best1Value, BestX = Best3X, BestY = Best3Y, BestPiece = Piece3, PackUsed = 3)
-    ).
+        (Best3Value > Best2Value, Best3Value > Best1Value, BestX = Best3X, BestY = Best3Y, BestPiece = Piece3, PackUsed = 3);
+        (Best1Value > Best2Value, BestX = Best1X, BestY = Best1Y, BestPiece = Piece1, PackUsed = 1);
+        (Best1Value > Best3Value, BestX = Best1X, BestY = Best1Y, BestPiece = Piece1, PackUsed = 1);
+        (Best2Value > Best1Value, BestX = Best2X, BestY = Best2Y, BestPiece = Piece2, PackUsed = 2);
+        (Best2Value > Best3Value, BestX = Best2X, BestY = Best2Y, BestPiece = Piece2, PackUsed = 2);
+        (Best3Value > Best1Value, BestX = Best3X, BestY = Best3Y, BestPiece = Piece3, PackUsed = 3);
+        (Best3Value > Best2Value, BestX = Best3X, BestY = Best3Y, BestPiece = Piece3, PackUsed = 3)
+    ),
+    nl,write('Best Piece='),write(BestPiece),nl.
 
 %getting the best possible move for a certain piece
 get_best_move_for_piece(Board, PossibleMoves, Piece, Player, InitialValue, InitialX, InitialY, BestX, BestY, BestValue):-
