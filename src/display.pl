@@ -18,18 +18,18 @@ display_boards(N, Board1, Board2):-
     write('  _____________________________________\t\t'),
     write('    _____________________________________\n'),
     nth0(N, Board1, Board1LineN),
-    write(N), write(' '),
+    N1 is N+1,
+    write(N1), write(' '),
     write('|'),
     display_line(Board1LineN),
     write('\t\t  '),
 
     nth0(N, Board2, Board2LineN),
-    write(N), write(' '),
+    write(N1), write(' '),
     write('|'),
     display_line(Board2LineN),
     write('\n'),
-
-    N1 is N+1,
+    
     display_boards(N1, Board1, Board2).
 
 %displays the three pieces on the top of each stack. displays "empty" when the stack doesn't have any more pieces
