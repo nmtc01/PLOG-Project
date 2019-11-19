@@ -11,7 +11,7 @@ set_in_line(N, Column, Piece, [Line| Others], [Line| NewOthers]):-
     set_in_line(Next, Column, Piece, Others, NewOthers).
 
 set_in_column(1, Piece, [PieceInBoard|Others], [Piece|Others]):-
-    PieceInBoard = ' 0 '.
+    PieceInBoard = '   '.
 
 set_in_column(N, Piece, [Column|Others], [Column|NewOthers]):-
     N > 1,
@@ -83,7 +83,7 @@ get_valid_move(Board, X, Y, Move):-
 %checks if the position given is empty, that is, if the cell is ' 0 '
 check_empty_place(Board, X, Y):-
     get_piece(Board, X, Y, Piece),!,
-    Piece == ' 0 '.
+    Piece == '   '.
 
 %used to format the position to an "X,Y" format
 prepare_possible_move(X, Y, Move):-
@@ -118,7 +118,7 @@ verify_moves(N, InputCoordX, InputCoordY, [Move|Others]):-
 get_piece(Board, InputCoordX, InputCoordY, Piece):-
     (InputCoordX > 0, InputCoordX < 10, InputCoordY > 0, InputCoordY < 10,
     (get_in_line(InputCoordX, InputCoordY, Piece, Board);
-    Piece = ' 0 '));
+    Piece = '   '));
     Piece = 'e'.
 
 get_in_line(1, InputCoordY, Piece, [InputCoordX| _]):-

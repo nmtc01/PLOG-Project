@@ -252,9 +252,9 @@ choose_move(Board, Pack1, Pack2, Pack3, PossibleMoves, AILevel, InputCoordX, Inp
 
 %used to find the best moves for the AI level 2
 get_best_move(Board, Pack1, Pack2, Pack3, PackUsed, PossibleMoves, Player, BestX, BestY, BestPiece):-
-    (nth0(0, Pack1, Piece1);Piece1=' 0 '),
-    (nth0(0, Pack2, Piece2);Piece2=' 0 '),
-    (nth0(0, Pack3, Piece3);Piece3=' 0 '),
+    (nth0(0, Pack1, Piece1);Piece1='   '),
+    (nth0(0, Pack2, Piece2);Piece2='   '),
+    (nth0(0, Pack3, Piece3);Piece3='   '),
     get_best_move_for_piece(Board, PossibleMoves, Piece1, Player, 0, _, _, Best1X, Best1Y, Best1Value),!,
     get_best_move_for_piece(Board, PossibleMoves, Piece2, Player, 0, _, _, Best2X, Best2Y, Best2Value),!,
     get_best_move_for_piece(Board, PossibleMoves, Piece3, Player, 0, _, _, Best3X, Best3Y, Best3Value),!,
