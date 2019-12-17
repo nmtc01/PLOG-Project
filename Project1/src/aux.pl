@@ -80,7 +80,7 @@ get_valid_move(Board, X, Y, Move):-
     check_empty_place(Board, X, Y),
     prepare_possible_move(X, Y, Move).
 
-%checks if the position given is empty, that is, if the cell is ' 0 '
+%checks if the position given is empty, that is, if the cell is '   '
 check_empty_place(Board, X, Y):-
     get_piece(Board, X, Y, Piece),!,
     Piece == '   '.
@@ -202,9 +202,9 @@ verify_piece_combination(Piece1, Piece2, Piece3, Score, ScoreOut):-
     check_matching_attr(Type1, Type2, Type3, NewScoreOut1, NewScoreOut2),
     check_matching_attr(Size1, Size2, Size3, NewScoreOut2, ScoreOut).
 
-%to check if two attributes are equal. ignores the empty cells with ' 0 '
+%to check if two attributes are equal. ignores the empty cells with '   '
 verify_attribute_combination(Attr1, Attr2):-
-    Attr1 \= ' ', Attr2 \= ' ', Attr1 \= '0', Attr2 \= '0', Attr1 = Attr2.
+    Attr1 \= ' ', Attr2 \= ' ', Attr1 = Attr2.
 
 %updates the score list for each player
 set_score(1, PointsPlayer1, [_|Others], [PointsPlayer1|Others]).
