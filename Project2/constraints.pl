@@ -22,19 +22,17 @@ verifyLine(Line, N):-
     appearsNtimesInList(3, Line, 1),
     %Empty places
     EmptyN is N-3,
-    write(EmptyN),nl,
     appearsNtimesInList(4, Line, EmptyN).
 
 /*
 * A given board with N*N elements has one star, one black circle and one white circle on each line.
 * The remaining places are empty.
 */
-verifyLines(_, N, Index):-
-    Index = N*N.
+verifyLines(_, N, N).
 
 verifyLines(Board, N, Index):-
+    Index < N,
     getLine(Board, N, Index, Line),
     verifyLine(Line, N),
-    write(Line),nl,
     New is Index+1,
     verifyLines(Board, N, New).
