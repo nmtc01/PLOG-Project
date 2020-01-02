@@ -2,7 +2,7 @@
 :-use_module(library(random)).
 :-[init].
 :-[display].
-:-[aux].
+:-[auxiliar].
 :-[menu].
 
 %main predicate of the game. when called on the terminal, displays the main menu and then starts the game according to the options chosen
