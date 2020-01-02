@@ -1,4 +1,4 @@
-:-use_module(library(lists)).
+:-[auxiliar].
 
 /*
 * A given element is present N times in a given list
@@ -10,7 +10,7 @@ appearsNtimesInList(Element, [Head|Tail], N):-
     appearsNtimesInList(Element, Tail, M). 
 
 /*
-* A given line with N elements has one star, one black circle, on white circle.
+* A given line with N elements has one star, one black circle and one white circle.
 * The remaining places are empty.
 */
 verifyLine(Line, N):-
@@ -22,22 +22,19 @@ verifyLine(Line, N):-
     appearsNtimesInList(3, Line, 1),
     %Empty places
     EmptyN is N-3,
-    write(EmptyN),
-    write(Line),
+    write(EmptyN),nl,
     appearsNtimesInList(4, Line, EmptyN).
 
+/*
+* A given board with N*N elements has one star, one black circle and one white circle on each line.
+* The remaining places are empty.
+*/
+verifyLines(_, N, Index):-
+    Index = N*N.
 
-
-
-
-/*getLine(_, _, LineIn, LineOut, 0):-
-    LineOut = LineIn.
-
-getLine(Index, [Var|Others], LineIn, LineOut, N):-
-    N > 0,*/
-    /*Missing using index*/
-    /*append(LineIn, [Var], LineIn2),
-    Next is N-1,
-    getLine(Index, Others, LineIn2, LineOut, Next).
-
-verifyLine(Line).*/
+verifyLines(Board, N, Index):-
+    getLine(Board, N, Index, Line),
+    verifyLine(Line, N),
+    write(Line),nl,
+    New is Index+1,
+    verifyLines(Board, N, New).

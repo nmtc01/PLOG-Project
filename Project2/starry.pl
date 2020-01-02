@@ -15,7 +15,7 @@ starry(N, Vars):-
     %Domain
     domain(Vars, 1, 4),
     %Constraints
-    verifyLine(Vars, NVars),
+    verifyLines(Vars, N, 0),
     %Labeling
     labeling([], Vars).
 
