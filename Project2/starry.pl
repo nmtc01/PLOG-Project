@@ -9,11 +9,19 @@ starry(N, Vars):-
         3-Black circle
         4-Empty
     */
+    %Vars declaration
     NVars is N*N,
     length(Vars, NVars),
+    %Domain
     domain(Vars, 1, 4),
-    verifyLine(Vars, N),
+    %Constraints
+    verifyLine(Vars, NVars),
+    %Labeling
     labeling([], Vars).
+
+
+
+
 
 /*starry(N, Vars):-*/
     /*
