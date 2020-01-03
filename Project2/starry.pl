@@ -11,7 +11,7 @@
 */
 play:-
     %Start menu
-    mainMenu(N, RulesLines, RulesColumns).
+    mainMenu(N, RulesLines, RulesColumns),
     %Solve starry night generated puzzle
     starry(N, _, RulesLines, RulesColumns).
 
