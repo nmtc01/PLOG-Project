@@ -24,7 +24,6 @@ starry(N, Vars):-
 
 
     %testing
-    
     %testing
 
 
