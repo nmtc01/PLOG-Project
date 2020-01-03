@@ -35,9 +35,11 @@ mainMenu(N, RulesLines, RulesColumns):-
 subMenu(N, RulesLines, RulesColumns):-
     repeat,
     write('Input the number of lines/columns (example: 5):'),nl,
+    write('Number bigger than 4:'),nl,
     read_line(NCodes),
     isNumber(NCodes),
-    number_codes(N, NCodes),!,
+    number_codes(N, NCodes),
+    N > 4,!,
 
     repeat,
     nl,write('Input a line rules list with size N:'),nl,

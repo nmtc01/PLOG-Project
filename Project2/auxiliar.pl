@@ -31,7 +31,7 @@ isNumber([Head|Tail]):-
     isNumber(Tail).
 
 /*
-* Converts a list of char codes representing numbers to a list o numbers
+* Converts a list of char codes representing numbers to a list of numbers
 */
 codesToList(Numbers, [], List):-
     Numbers = List.
@@ -42,5 +42,6 @@ codesToList(Numbers, [Head|Tail], List):-
     append(List, [Number], ListOut),
     codesToList(Numbers, Tail, ListOut).
 
-codesToList(Numbers, [_|Tail], List):-
+codesToList(Numbers, [Head|Tail], List):-
+    (Head < 48; Head > 57),
     codesToList(Numbers, Tail, List).
