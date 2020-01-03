@@ -24,12 +24,13 @@ getColumn(Puzzle, N, IndexCol, IndexLine, ColIn, ColOut):-
 /*
 * Displays puzzle grid.
 */
-displayGrid(0):-
+displayGrid(0,_):-
     nl.
 
-displayGrid(N):-
+displayGrid(N, Char):-
     N > 0,
-    write('________'),
+    ((Char='_', write('________'));
+     (Char='-', write('--------'))),
     Next is N-1,
     displayGrid(Next).
 
@@ -63,13 +64,13 @@ displayLine([Head|Tail]):-
 * Displays puzzle solution at the end
 */
 display(_, N, N):-
-    write('--------------------------------------------------------'),nl.
+    displayGrid(1, '-').
 
 display(Puzzle, N, Index):-
     displayGrid(N),
     Index < N,
     getLine(Puzzle, N, Index, Line),
-    displayBlanckLine(N),
+    displayBlanckLine(N, '_'),
     displayLine(Line),
     New is Index+1,
     display(Puzzle, N, New).
