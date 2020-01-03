@@ -22,12 +22,7 @@ starry(N, Vars):-
     leftDiagonals(Vars, N, 0),
     rightDiagonals(Vars, N, 0),
     applyLinesRules(Vars, N, RulesLines, 0),
-
-
-    %testing
-    %testing
-
-
+    applyColumnsRules(Vars, N, RulesColumns, 0),
     %Labeling
     labeling([], Vars),
     %Display solution

@@ -161,4 +161,19 @@ applyLinesRules(Puzzle, N, Rules, Index):-
     Next is Index+1,
     applyLinesRules(Puzzle, N, Rules, Next).
 
+/*
+* Given a puzzle and a list of rules, it applies the rules to the corresponding columns
+*/
+applyColumnsRules(_, N, _, N).
+
+applyColumnsRules(Puzzle, N, Rules, IndexCol):-
+    nth0(IndexCol, Rules, Rule),
+    ((Rule = 4);
+     (getColumn(Puzzle, N, IndexCol, 0, [], Column),
+     ((Rule = 1, starRule(Column));
+      (Rule = 2, whiteRule(Column));
+      (Rule = 3, blackRule(Column))))),
+    Next is IndexCol+1,
+    applyColumnsRules(Puzzle, N, Rules, Next).
+
 
