@@ -8,6 +8,20 @@ getLine(Board, N, Index, Line):-
     sublist(Board, Line, Before, N, _).
 
 /*
+* Given a board with size N*N, gives column with index Index
+*/
+getColumn(_,N,_,N,ColIn,ColOut):-
+    ColIn = ColOut.
+
+getColumn(Board, N, IndexCol, IndexLine, ColIn, ColOut):-
+    IndexLine < N,
+    I is N*IndexLine + IndexCol,
+    nth0(I, Board, Element),
+    append(ColIn, [Element], Col),
+    New is IndexLine+1, 
+    getColumn(Board, N, IndexCol, New, Col, ColOut).
+
+/*
 * Displays puzzle solution at the end
 */
 display(_, N, N).
