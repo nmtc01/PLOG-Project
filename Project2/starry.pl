@@ -1,5 +1,5 @@
 :-use_module(library(clpfd)).
-:-[generate_boards].
+:-[generate_puzzles].
 :-[constraints].
 
 starry(N, Vars):-
@@ -14,6 +14,8 @@ starry(N, Vars):-
     length(Vars, NVars),
     %Domain
     domain(Vars, 1, 4),
+    %Generate puzzle
+    generate_puzzle(N, RulesLines, RulesColumns),
     %Constraints
     verifyLines(Vars, N, 0),
     verifyColumns(Vars, N, 0),
