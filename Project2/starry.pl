@@ -1,6 +1,7 @@
 :-use_module(library(clpfd)).
 :-[generate_puzzles].
 :-[constraints].
+:-[display].
 
 starry(N, Vars):-
     /*
@@ -21,17 +22,12 @@ starry(N, Vars):-
     verifyColumns(Vars, N, 0),
     leftDiagonals(Vars, N, 0),
     rightDiagonals(Vars, N, 0),
-
-
-    %testing
-    
-    %testing
-
-
+    applyLinesRules(Vars, N, RulesLines, 0),
+    applyColumnsRules(Vars, N, RulesColumns, 0),
     %Labeling
     labeling([], Vars),
     %Display solution
-    display(Vars, N, 0).
+    nl, display(Vars, RulesLines, RulesColumns, N, 0).
 
 
 
