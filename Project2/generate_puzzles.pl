@@ -1,6 +1,7 @@
 :-use_module(library(random)).
 
 generatePuzzle(N, RulesLines, RulesCols):-
+    N = 6,
     RulesLines = [1, 4, 4, 4, 2, 4],
     RulesCols = [4, 3, 2, 4, 1, 1].
 
