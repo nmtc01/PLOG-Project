@@ -32,7 +32,7 @@ displayGrid(N, Char):-
     ((Char='_', write('________'));
      (Char='-', write('--------'))),
     Next is N-1,
-    displayGrid(Next).
+    displayGrid(Next,Char).
 
 /*
 * Displays a line with no values, just ||.
@@ -64,13 +64,13 @@ displayLine([Head|Tail]):-
 * Displays puzzle solution at the end
 */
 display(_, N, N):-
-    displayGrid(1, '-').
+    displayGrid(N, '-').
 
 display(Puzzle, N, Index):-
-    displayGrid(N),
+    displayGrid(N, '_'),
     Index < N,
     getLine(Puzzle, N, Index, Line),
-    displayBlanckLine(N, '_'),
+    displayBlanckLine(N),
     displayLine(Line),
     New is Index+1,
     display(Puzzle, N, New).
