@@ -26,6 +26,9 @@ starry(N, Vars):-
     applyColumnsRules(Vars, N, RulesColumns, 0),
     %Labeling
     labeling([], Vars),
+    %Statistics
+    %fd_statistics,
+    %statistics,
     %Display solution
     nl, display(Vars, RulesLines, RulesColumns, N, 0).
 
