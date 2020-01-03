@@ -1,6 +1,7 @@
 :-use_module(library(clpfd)).
 :-[generate_puzzles].
 :-[constraints].
+:-[display].
 
 starry(N, Vars):-
     /*
@@ -26,7 +27,7 @@ starry(N, Vars):-
     %Labeling
     labeling([], Vars),
     %Display solution
-    display(Vars, N, 0).
+    nl, display(Vars, RulesLines, RulesColumns, N, 0).
 
 
 
