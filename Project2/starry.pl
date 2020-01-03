@@ -17,6 +17,15 @@ starry(N, Vars):-
     %Constraints
     verifyLines(Vars, N, 0),
     verifyColumns(Vars, N, 0),
+    leftDiagonals(Vars, N, 0),
+    rightDiagonals(Vars, N, 0),
+
+
+    %testing
+    
+    %testing
+
+
     %Labeling
     labeling([], Vars),
     %Display solution
