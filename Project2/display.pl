@@ -1,4 +1,13 @@
 /*
+* Displays initial menu
+*/
+displayMainMenu:-
+    write('\33\[2J\n'),
+    write('Choose an option:'),nl,
+    write('1 - Program generates random puzzle and solves it'),nl,
+    write('2 - User inputs a puzzle and program solves it'),nl.
+
+/*
 * Displays puzzle grid.
 */
 displayGrid(0,_):-

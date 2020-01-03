@@ -20,3 +20,27 @@ getColumn(Puzzle, N, IndexCol, IndexLine, ColIn, ColOut):-
     append(ColIn, [Element], Col),
     New is IndexLine+1, 
     getColumn(Puzzle, N, IndexCol, New, Col, ColOut).
+
+/*
+* Verifies if the list of codes given represent a number
+*/
+isNumber([]).
+
+isNumber([Head|Tail]):-
+    Head > 47, Head < 58,
+    isNumber(Tail).
+
+/*
+* Converts a list of char codes representing numbers to a list o numbers
+*/
+codesToList(Numbers, [], List):-
+    Numbers = List.
+
+codesToList(Numbers, [Head|Tail], List):-
+    Head > 47, Head < 58,
+    number_codes(Number, [Head]),
+    append(List, [Number], ListOut),
+    codesToList(Numbers, Tail, ListOut).
+
+codesToList(Numbers, [_|Tail], List):-
+    codesToList(Numbers, Tail, List).
