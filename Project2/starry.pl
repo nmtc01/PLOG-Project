@@ -21,6 +21,7 @@ starry(N, Vars):-
     verifyColumns(Vars, N, 0),
     leftDiagonals(Vars, N, 0),
     rightDiagonals(Vars, N, 0),
+    applyLinesRules(Vars, N, RulesLines, 0),
 
 
     %testing

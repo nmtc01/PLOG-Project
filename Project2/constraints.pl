@@ -149,6 +149,16 @@ blackRule(List):-
 /*
 * Given a puzzle and a list of rules, it applies the rules to the corresponding lines
 */
-/*applyLinesRules(Puzzle, Rules, Index):-*/
+applyLinesRules(_, N, _, N).
+
+applyLinesRules(Puzzle, N, Rules, Index):-
+    nth0(Index, Rules, Rule),
+    ((Rule = 4);
+     (getLine(Puzzle, N, Index, Line),
+     ((Rule = 1, starRule(Line));
+      (Rule = 2, whiteRule(Line));
+      (Rule = 3, blackRule(Line))))),
+    Next is Index+1,
+    applyLinesRules(Puzzle, N, Rules, Next).
 
 
