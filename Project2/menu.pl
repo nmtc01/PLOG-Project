@@ -6,14 +6,12 @@
 * 1- Generate random puzzle and solve it
 * 2- Input a puzzle and solve it
 */
-mainMenu(N, RulesLines, RulesColumns):-
+mainMenu(Choice):-
     displayMainMenu,
     repeat,
     read_line(Line),
     nth0(0, Line, ChoiceCode),
-    char_code(Choice, ChoiceCode),
-    ((Choice = '1', generatePuzzle(N, RulesLines, RulesColumns));
-     (Choice = '2', subMenu(N, RulesLines, RulesColumns))),!.
+    char_code(Choice, ChoiceCode).
 
 /*
 * Creates a sub menu - user has to input the board so that the program can solve it
