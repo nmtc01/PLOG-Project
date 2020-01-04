@@ -115,3 +115,9 @@ selRandom(Var, _, BB0, BB1):-
     random_member(Value, List), 
     ( first_bound(BB0, BB1), Var #= Value ;
     later_bound(BB0, BB1), Var #\= Value ).
+
+/*
+* Resets timer
+*/
+resetTimer:-
+    statistics(walltime,_).

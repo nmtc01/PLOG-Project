@@ -26,6 +26,8 @@ play(Vars):-
 followPath('1', Vars):-
     %Requests for the input of the number of lines/columns
     nMenu(N),
+    %Reset timer
+    resetTimer,
     %Vars declaration - all puzzle including outside constraints
     No is N+1,
     NVars is No*No,
@@ -44,6 +46,8 @@ followPath('1', Vars):-
 followPath('2', Vars):-
     %User inputs a puzzle to be solved - submenu
     subMenu(N, RulesLines, RulesColumns),
+    %Reset timer
+    resetTimer,
     %Vars declaration - only puzzle inside grid
     NVars is N*N,
     length(Vars, NVars),

@@ -70,9 +70,9 @@ displayLine([Head|Tail], RulesLines, Index):-
 */
 printTime:-
     statistics(walltime,[_,T]),
-    TS is ((T//10)*10)/1000,
+    TS is (T//10)*10,
     nl,write('Time: '),
-    write(TS), write('s'),
+    write(TS), write('ms'),
     nl,nl.
 
 /*
@@ -91,7 +91,3 @@ display(Puzzle, RulesLines, RulesCols, N, Index):-
     displayLine(Line, RulesLines, Index),
     New is Index+1,
     display(Puzzle, RulesLines, RulesCols, N, New).
-
-
-resetTimer:-
-    statistics(walltime,_).
