@@ -38,7 +38,6 @@ followPath('1', Vars):-
     %Apply constraints that are equal on the two options - inside constraints
     starryCommon(N, Puzzle),
     %Apply constraints that are specific of this option - outside constraints
-    %trace,
     starryGenerate(No, Vars).
 
 followPath('2', Vars):-
@@ -81,11 +80,13 @@ starryGenerate(N, Vars):-
     %Statistics
     %fd_statistics,
     %statistics,
-    %Get Rules
+    %Get Rules and Puzzle separately - prepare display
     getRulesLines(Vars, N, 0, RulesLines, []),
     getRulesColumns(Vars, N, 0, RulesColumns, []),
+    Size is N-1,
+    getPuzzle(0, Size, Vars, Puzzle, []),
     %Display solution
-    nl, display(Vars, RulesLines, RulesColumns, N, 0).
+    nl, display(Puzzle, RulesLines, RulesColumns, Size, 0).
 
 /*
 * Applies constraints given by the user to lines (applyLinesRules) and to columns (applyColumnsRules):

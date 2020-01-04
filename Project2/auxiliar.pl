@@ -77,7 +77,7 @@ getRulesLines(_, N, Index, RulesLines, List):-
 getRulesLines(Vars, N, Index, RulesLines, List):-
     getLine(Vars, N, Index, Line),
     nth1(N, Line, Rule),
-    append(List, Rule, ListOut),
+    append(List, [Rule], ListOut),
     Next is Index+1,
     getRulesLines(Vars, N, Next, RulesLines, ListOut).
 
@@ -92,7 +92,7 @@ getRulesColumns(_, N, Index, RulesColumns, List):-
 getRulesColumns(Vars, N, Index, RulesColumns, List):-
     getColumn(Vars, N, Index, 0, [], Column),
     nth1(N, Column, Rule),
-    append(List, Rule, ListOut),
+    append(List, [Rule], ListOut),
     Next is Index+1,
     getRulesColumns(Vars, N, Next, RulesColumns, ListOut).
 
