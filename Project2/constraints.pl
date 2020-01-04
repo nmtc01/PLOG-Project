@@ -176,4 +176,44 @@ applyColumnsRules(Puzzle, N, Rules, IndexCol):-
     Next is IndexCol+1,
     applyColumnsRules(Puzzle, N, Rules, Next).
 
+/*
+* Given a full puzzle, it applies the outside constraints to the corresponding lines
+*/
+constraintLinesRules(_, N, Index):-
+    End is N-1,
+    Index = End.
 
+constraintLinesRules(Vars, N, Index):-
+    %Get puzzle line
+    getLine(Vars, N, Index, FullLine),
+    %Get constraint for that line
+    nth1(N, FullLine, Rule),
+    ((Rule #= 4);
+     %Get part of the line that is inside of the grid
+     sublist(FullLine, InsideLine, 0, N, _),
+     ((Rule #= 1, starRule(InsideLine));
+      (Rule #= 2, whiteRule(InsideLine));
+      (Rule #= 3, blackRule(InsideLine))))),
+    Next is Index+1,
+    constraintLinesRules(Vars, N, Next).
+
+/*
+* Given a full puzzle, it applies the outside constraints to the corresponding columns
+*/
+constraintColumnsRules(_, N, Index):-
+    End is N-1,
+    Index = End.
+
+constraintColumnsRules(Vars, N, Index):-
+    %Get puzzle column
+    getColumn(Vars, N, Index, 0, [], FullColumn),
+    %Get constraint for that column
+    nth1(N, FullColumn, Rule), 
+    ((Rule #= 4);
+     %Get part of the line that is inside of the grid
+     sublist(FullColumn, InsideColumn, 0, N, _),
+     ((Rule #= 1, starRule(InsideColumn));
+      (Rule #= 2, whiteRule(InsideColumn));
+      (Rule #= 3, blackRule(InsideColumn))))),
+    Next is Index+1,
+    constraintColumnsRules(Vars, N, Next).

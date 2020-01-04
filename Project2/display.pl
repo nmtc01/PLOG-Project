@@ -66,17 +66,17 @@ displayLine([Head|Tail], RulesLines, Index):-
     displayLine(Tail, RulesLines, Index).
 
 /*
-* Displays puzzle solution at the end for option 2 - User inputs puzzle
+* Displays puzzle solution at the end
 */
-displayUser(_, _, RulesCols, N, N):-
+display(_, _, RulesCols, N, N):-
     displayGrid(N, '-'),nl,
     displayLineOfRules(RulesCols).
 
-displayUser(Puzzle, RulesLines, RulesCols, N, Index):-
+display(Puzzle, RulesLines, RulesCols, N, Index):-
     displayGrid(N, '_'),
     Index < N,
     getLine(Puzzle, N, Index, Line),
     displayBlanckLine(N),
     displayLine(Line, RulesLines, Index),
     New is Index+1,
-    displayUser(Puzzle, RulesLines, RulesCols, N, New).
+    display(Puzzle, RulesLines, RulesCols, N, New).

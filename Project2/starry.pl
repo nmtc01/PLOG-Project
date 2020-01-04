@@ -79,8 +79,11 @@ starryGenerate(N, Vars):-
     %Statistics
     %fd_statistics,
     %statistics,
+    %Get Rules
+    getRulesLines(Vars, N, 0, RulesLines, []),
+    getRulesColumns(Vars, N, 0, RulesColumns, []),
     %Display solution
-    nl, displayGenerate(Vars, N, 0).
+    nl, display(Vars, RulesLines, RulesColumns, N, 0).
 
 /*
 * Applies constraints given by the user to lines (applyLinesRules) and to columns (applyColumnsRules):
@@ -97,7 +100,7 @@ starryUser(N, Vars, RulesLines, RulesColumns):-
     %fd_statistics,
     %statistics,
     %Display solution
-    nl, displayUser(Vars, RulesLines, RulesColumns, N, 0).
+    nl, display(Vars, RulesLines, RulesColumns, N, 0).
 
 
 
