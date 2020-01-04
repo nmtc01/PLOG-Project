@@ -5,11 +5,11 @@
 /*
 * Start predicate
 */
-play:-
+play(Vars):-
     %Start menu
     mainMenu(N, RulesLines, RulesColumns),
     %Solve starry night generated puzzle
-    starry(N, _, RulesLines, RulesColumns).
+    starry(N, Vars, RulesLines, RulesColumns).
 
 /*
 * Main - Solves starry night puzzle
