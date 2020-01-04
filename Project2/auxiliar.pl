@@ -95,3 +95,13 @@ getRulesColumns(Vars, N, Index, RulesColumns, List):-
     append(List, Rule, ListOut),
     Next is Index+1,
     getRulesColumns(Vars, N, Next, RulesColumns, ListOut).
+
+/*
+* Given a list, provides the distance between star and black circle, and star and white circle on that list
+*/
+getDistances(List, DistWhite, DistBlack):-
+    nth0(Star, List, 1),
+    nth0(White, List, 2),
+    nth0(Black, List, 3),
+    DistWhite is abs(Star-White),
+    DistBlack is abs(Star-Black).

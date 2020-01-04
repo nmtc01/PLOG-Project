@@ -117,33 +117,21 @@ rightDiagonals(Puzzle, N, Index):-
 * Given a list, it makes sure the white circle and the black circle in the list are equally distanced from the star.
 */
 starRule(List):-
-    nth0(Star, List, 1),
-    nth0(White, List, 2),
-    nth0(Black, List, 3),
-    DistWhite is abs(Star-White),
-    DistBlack is abs(Star-Black),
+    getDistances(List, DistWhite, DistBlack),
     DistWhite #= DistBlack.
 
 /*
 * Given a list, it makes sure the white circle is closer to the star than the black circle in the list.
 */
 whiteRule(List):-
-    nth0(Star, List, 1),
-    nth0(White, List, 2),
-    nth0(Black, List, 3),
-    DistWhite is abs(Star-White),
-    DistBlack is abs(Star-Black),
+    getDistances(List, DistWhite, DistBlack),
     DistWhite #< DistBlack.
 
 /*
 * Given a list, it makes sure the black circle is closer to the star than the white circle in the list.
 */
 blackRule(List):-
-    nth0(Star, List, 1),
-    nth0(White, List, 2),
-    nth0(Black, List, 3),
-    DistWhite is abs(Star-White),
-    DistBlack is abs(Star-Black),
+    getDistances(List, DistWhite, DistBlack),
     DistBlack #< DistWhite.
 
 /*
@@ -188,12 +176,16 @@ constraintLinesRules(Vars, N, Index):-
     getLine(Vars, N, Index, FullLine),
     %Get constraint for that line
     nth1(N, FullLine, Rule),
-    ((Rule #= 4);
-     %Get part of the line that is inside of the grid
-     (sublist(FullLine, InsideLine, 0, N, _),
-     ((Rule #= 1, starRule(InsideLine));
-      (Rule #= 2, whiteRule(InsideLine));
-      (Rule #= 3, blackRule(InsideLine))))),
+    %Get part of the line that is inside of the grid
+    sublist(FullLine, InsideLine, 0, N, _),
+    %Get distances
+    getDistances(InsideLine, DistWhite, DistBlack),
+    %Constraints
+    ((Rule #= 4) #\/
+     (Rule #= 1 #/\ DistWhite #= DistBlack) #\/
+     (Rule #= 2 #/\ DistWhite #< DistBlack) #\/
+     (Rule #= 3 #/\ DistBlack #< DistWhite)),
+    %Next recursion
     Next is Index+1,
     constraintLinesRules(Vars, N, Next).
 
@@ -209,11 +201,15 @@ constraintColumnsRules(Vars, N, Index):-
     getColumn(Vars, N, Index, 0, [], FullColumn),
     %Get constraint for that column
     nth1(N, FullColumn, Rule), 
-    ((Rule #= 4);
-     %Get part of the line that is inside of the grid
-     (sublist(FullColumn, InsideColumn, 0, N, _),
-     ((Rule #= 1, starRule(InsideColumn));
-      (Rule #= 2, whiteRule(InsideColumn));
-      (Rule #= 3, blackRule(InsideColumn))))),
+    %Get part of the line that is inside of the grid
+    sublist(FullColumn, InsideColumn, 0, N, _),
+    %Get distances
+    getDistances(InsideColumn, DistWhite, DistBlack),
+    %Constraints
+    ((Rule #= 4) #\/
+     (Rule #= 1 #/\ DistWhite #= DistBlack) #\/
+     (Rule #= 2 #/\ DistWhite #< DistBlack) #\/
+     (Rule #= 3 #/\ DistBlack #< DistWhite)),
+    %Next recursion
     Next is Index+1,
     constraintColumnsRules(Vars, N, Next).
