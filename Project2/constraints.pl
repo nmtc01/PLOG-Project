@@ -190,7 +190,7 @@ constraintLinesRules(Vars, N, Index):-
     nth1(N, FullLine, Rule),
     ((Rule #= 4);
      %Get part of the line that is inside of the grid
-     sublist(FullLine, InsideLine, 0, N, _),
+     (sublist(FullLine, InsideLine, 0, N, _),
      ((Rule #= 1, starRule(InsideLine));
       (Rule #= 2, whiteRule(InsideLine));
       (Rule #= 3, blackRule(InsideLine))))),
@@ -211,7 +211,7 @@ constraintColumnsRules(Vars, N, Index):-
     nth1(N, FullColumn, Rule), 
     ((Rule #= 4);
      %Get part of the line that is inside of the grid
-     sublist(FullColumn, InsideColumn, 0, N, _),
+     (sublist(FullColumn, InsideColumn, 0, N, _),
      ((Rule #= 1, starRule(InsideColumn));
       (Rule #= 2, whiteRule(InsideColumn));
       (Rule #= 3, blackRule(InsideColumn))))),
