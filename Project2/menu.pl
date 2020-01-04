@@ -10,7 +10,7 @@ mainMenu(Choice):-
     repeat,
     read_line(Line),
     nth0(0, Line, ChoiceCode),
-    char_code(Choice, ChoiceCode).
+    char_code(Choice, ChoiceCode),!.
 
 /*
 * Creates a sub menu - user has to input the board so that the program can solve it
