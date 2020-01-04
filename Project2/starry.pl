@@ -1,4 +1,5 @@
 :-use_module(library(clpfd)).
+:-use_module(library(random)).
 :-[constraints].
 :-[menu].
 
@@ -23,12 +24,24 @@ play(Vars):-
 * 1- Generate random puzzle and solve it
 * 2- Input a puzzle and solve it
 */
-followPath('1', Vars).
+followPath('1', Vars):-
+    %Generate random N between 5 and 10
+    random(5, 10, N),
+    %Vars declaration - all puzzle including outside constraints
+    No is N+1,
+    NVars is (No)*(No),
+    length(Vars, NVars),
+    %get part of the puzzle that is inside of the grid
+    getPuzzle(N, Puzzle),
+    %Apply constraints that are equal on the two options - inside constraints
+    starryCommon(N, Puzzle),
+    %Apply constraints that are specific of this option - outside constraints
+    starryGenerate(No, Vars).
 
 followPath('2', Vars):-
     %User inputs a puzzle to be solved - submenu
     subMenu(N, RulesLines, RulesColumns),
-    %Vars declaration
+    %Vars declaration - only puzzle inside grid
     NVars is N*N,
     length(Vars, NVars),
     %Apply constraints that are equal on the two options - inside constraints
