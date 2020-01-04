@@ -177,7 +177,8 @@ constraintLinesRules(Vars, N, Index):-
     %Get constraint for that line
     nth1(N, FullLine, Rule),
     %Get part of the line that is inside of the grid
-    sublist(FullLine, InsideLine, 0, N, _),
+    Size is N-1,
+    sublist(FullLine, InsideLine, 0, Size, _),
     %Get distances
     getDistances(InsideLine, DistWhite, DistBlack),
     %Constraints
@@ -202,7 +203,8 @@ constraintColumnsRules(Vars, N, Index):-
     %Get constraint for that column
     nth1(N, FullColumn, Rule), 
     %Get part of the line that is inside of the grid
-    sublist(FullColumn, InsideColumn, 0, N, _),
+    Size is N-1,
+    sublist(FullColumn, InsideColumn, 0, Size, _),
     %Get distances
     getDistances(InsideColumn, DistWhite, DistBlack),
     %Constraints
@@ -213,3 +215,12 @@ constraintColumnsRules(Vars, N, Index):-
     %Next recursion
     Next is Index+1,
     constraintColumnsRules(Vars, N, Next).
+
+/*
+* Forces that the cell on the bottom right corner is an empty space
+*/
+lastElementConstraint(Vars, N):-
+    Index is N-1,
+    getLine(Vars, N, Index, Line),
+    nth1(N, Line, Cell),
+    Cell #= 4.

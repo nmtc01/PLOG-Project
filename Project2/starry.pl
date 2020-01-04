@@ -33,9 +33,12 @@ followPath('1', Vars):-
     length(Vars, NVars),
     %get part of the puzzle that is inside of the grid
     getPuzzle(0, N, Vars, Puzzle, []),
+    %Domain
+    domain(Vars, 1, 4),
     %Apply constraints that are equal on the two options - inside constraints
     starryCommon(N, Puzzle),
     %Apply constraints that are specific of this option - outside constraints
+    %trace,
     starryGenerate(No, Vars).
 
 followPath('2', Vars):-
@@ -50,15 +53,12 @@ followPath('2', Vars):-
     starryUser(N, Vars, RulesLines, RulesColumns).
 
 /*
-* Defines variables domain (domain)
 * Applies main constraints of the intern puzzle, such as:
 * 1- exactly one white circle (sun), one black circle (moon), and one star in every row of the grid (verifyLines)
 * 2- exactly one white circle (sun), one black circle (moon), and one star in every row of the grid (verifyColumns)
 * 3- symbols will not touch similar symbols diagonally (leftDiagonals and rightDiagonals)
 */
 starryCommon(N, Vars):-
-    %Domain
-    domain(Vars, 1, 4),
     %Constraints
     verifyLines(Vars, N, 0),
     verifyColumns(Vars, N, 0),
@@ -72,8 +72,10 @@ starryCommon(N, Vars):-
 * Then gives the solution.
 */
 starryGenerate(N, Vars):-
+    %Constraints
     constraintLinesRules(Vars, N, 0),
     constraintColumnsRules(Vars, N, 0),
+    lastElementConstraint(Vars, N),
     %Labeling
     labeling([], Vars),
     %Statistics
@@ -92,6 +94,7 @@ starryGenerate(N, Vars):-
 * Then gives the solution.
 */
 starryUser(N, Vars, RulesLines, RulesColumns):-
+    %Constraints
     applyLinesRules(Vars, N, RulesLines, 0),
     applyColumnsRules(Vars, N, RulesColumns, 0),
     %Labeling
