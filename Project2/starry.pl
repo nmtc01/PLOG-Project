@@ -24,8 +24,8 @@ play(Vars):-
 * 2- Input a puzzle and solve it
 */
 followPath('1', Vars):-
-    %Generate random N between 5 and 10
-    random(5, 11, N),
+    %Requests for the input of the number of lines/columns
+    nMenu(N),
     %Vars declaration - all puzzle including outside constraints
     No is N+1,
     NVars is No*No,
@@ -79,7 +79,7 @@ starryGenerate(N, Vars):-
     constraintColumnsRules(Vars, N, 0),
     lastElementConstraint(Vars, N),
     %Labeling
-    labeling([], Vars),
+    labeling([value(selRandom)], Vars),
     %Statistics
     %fd_statistics,
     %statistics,

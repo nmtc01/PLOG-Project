@@ -16,13 +16,7 @@ mainMenu(Choice):-
 * Creates a sub menu - user has to input the board so that the program can solve it
 */
 subMenu(N, RulesLines, RulesColumns):-
-    repeat,
-    write('Input the number of lines/columns (example: 5):'),nl,
-    write('Number bigger than 4:'),nl,
-    read_line(NCodes),
-    isNumber(NCodes),
-    number_codes(N, NCodes),
-    N > 4,!,
+    nMenu(N),
 
     repeat,
     nl,write('Input a line rules list with size N:'),nl,
@@ -45,3 +39,15 @@ subMenu(N, RulesLines, RulesColumns):-
     read_line(RCCodes),
     codesToList(RulesColumns, RCCodes, []),
     length(RulesColumns, N),!.
+
+/*
+* Requests for input of number of lines/columns
+*/
+nMenu(N):-
+    repeat,
+    write('Input the number of lines/columns (example: 5):'),nl,
+    write('Number bigger than 4:'),nl,
+    read_line(NCodes),
+    isNumber(NCodes),
+    number_codes(N, NCodes),
+    N > 4,!.

@@ -66,11 +66,22 @@ displayLine([Head|Tail], RulesLines, Index):-
     displayLine(Tail, RulesLines, Index).
 
 /*
+* Prints time
+*/
+printTime:-
+    statistics(walltime,[_,T]),
+    TS is ((T//10)*10)/1000,
+    nl,write('Time: '),
+    write(TS), write('s'),
+    nl,nl.
+
+/*
 * Displays puzzle solution at the end
 */
 display(_, _, RulesCols, N, N):-
     displayGrid(N, '-'),nl,
-    displayLineOfRules(RulesCols).
+    displayLineOfRules(RulesCols),
+    printTime.
 
 display(Puzzle, RulesLines, RulesCols, N, Index):-
     displayGrid(N, '_'),
@@ -80,3 +91,7 @@ display(Puzzle, RulesLines, RulesCols, N, Index):-
     displayLine(Line, RulesLines, Index),
     New is Index+1,
     display(Puzzle, RulesLines, RulesCols, N, New).
+
+
+resetTimer:-
+    statistics(walltime,_).
