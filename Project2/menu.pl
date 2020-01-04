@@ -1,5 +1,4 @@
 :-[display].
-:-[generate_puzzles].
 
 /*
 * Creates a menu with two options

@@ -32,7 +32,7 @@ followPath('1', Vars):-
     NVars is (No)*(No),
     length(Vars, NVars),
     %get part of the puzzle that is inside of the grid
-    getPuzzle(N, Puzzle),
+    getPuzzle(0, N, Vars, Puzzle, []),
     %Apply constraints that are equal on the two options - inside constraints
     starryCommon(N, Puzzle),
     %Apply constraints that are specific of this option - outside constraints
@@ -66,11 +66,27 @@ starryCommon(N, Vars):-
     rightDiagonals(Vars, N, 0).
 
 /*
-* Defines variables domain (domain)
-* Applies main constraints of the intern puzzle, such as:
-* 1- exactly one white circle (sun), one black circle (moon), and one star in every row of the grid (verifyLines)
-* 2- exactly one white circle (sun), one black circle (moon), and one star in every row of the grid (verifyColumns)
-* 3- symbols will not touch similar symbols diagonally (leftDiagonals and rightDiagonals)
+* Applies constraints to lines (constraintLinesRules) and to columns (constraintColumnsRules):
+* 1- A circle on the side of the grid indicates the color of the circle closer to the star in that row or column. 
+* 2- A star on the side of the grid indicates that the circles in that row or column are the same distance to the star.
+* Then gives the solution.
+*/
+starryGenerate(N, Vars):-
+    constraintLinesRules(Vars, N, 0),
+    constraintColumnsRules(Vars, N, 0),
+    %Labeling
+    labeling([], Vars),
+    %Statistics
+    %fd_statistics,
+    %statistics,
+    %Display solution
+    nl, displayGenerate(Vars, N, 0).
+
+/*
+* Applies constraints given by the user to lines (applyLinesRules) and to columns (applyColumnsRules):
+* 1- A circle on the side of the grid indicates the color of the circle closer to the star in that row or column. 
+* 2- A star on the side of the grid indicates that the circles in that row or column are the same distance to the star.
+* Then gives the solution.
 */
 starryUser(N, Vars, RulesLines, RulesColumns):-
     applyLinesRules(Vars, N, RulesLines, 0),
@@ -81,7 +97,9 @@ starryUser(N, Vars, RulesLines, RulesColumns):-
     %fd_statistics,
     %statistics,
     %Display solution
-    nl, display(Vars, RulesLines, RulesColumns, N, 0).
+    nl, displayUser(Vars, RulesLines, RulesColumns, N, 0).
+
+
 
 
 

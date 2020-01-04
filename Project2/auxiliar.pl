@@ -45,3 +45,23 @@ codesToList(Numbers, [Head|Tail], List):-
 codesToList(Numbers, [Head|Tail], List):-
     (Head < 48; Head > 57),
     codesToList(Numbers, Tail, List).
+
+/*
+* Given a full puzzle, it provides the part of the puzzle line that is within the grid
+*/
+getPuzzleLine(Index, N, Vars, Line):-
+    No is N+1,
+    Before is No*Index,
+    sublist(Vars, Line, Before, N, _).
+
+/*
+* Gives the part of the puzzle that is inside of the grid
+*/
+getPuzzle(N, N, _, Puzzle, List):-
+    Puzzle = List.
+
+getPuzzle(Index, N, Vars, Puzzle, List):-
+    getPuzzleLine(Index, N, Vars, Line),
+    append(List, Line, ListOut),
+    Next is Index+1,
+    getPuzzle(Next, N, Vars, Puzzle, ListOut).
