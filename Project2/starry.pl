@@ -25,8 +25,7 @@ play(Vars):-
 */
 followPath('1', Vars):-
     %Generate random N between 5 and 10
-    %random(5, 11, N),
-    N=5,
+    random(5, 11, N),
     %Vars declaration - all puzzle including outside constraints
     No is N+1,
     NVars is No*No,
