@@ -12,11 +12,11 @@
 /*
 * Start predicate.
 */
-play(Vars):-
+starry(Night):-
     %Start menu
     mainMenu(Choice),
     %Choose path 
-    followPath(Choice, Vars).
+    followPath(Choice, Night).
 
 /*
 * Divides program in two paths, representing each of the two options of the menu.
