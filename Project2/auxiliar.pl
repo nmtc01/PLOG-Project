@@ -1,4 +1,5 @@
 :-use_module(library(lists)).
+:-use_module(library(random)).
 
 /*
 * Given a puzzle with size N*N, gives line with index Index.
@@ -105,3 +106,12 @@ getDistances(List, DistWhite, DistBlack):-
     nth0(Black, List, 3),
     DistWhite is abs(Star-White),
     DistBlack is abs(Star-Black).
+
+/*
+* Selects a random solution
+*/
+selRandom(Var, _, BB0, BB1):-
+    fd_set(Var, Set), fdset_to_list(Set, List),
+    random_member(Value, List), 
+    ( first_bound(BB0, BB1), Var #= Value ;
+    later_bound(BB0, BB1), Var #\= Value ).
