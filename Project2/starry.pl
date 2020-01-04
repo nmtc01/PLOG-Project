@@ -46,6 +46,8 @@ followPath('2', Vars):-
     %Vars declaration - only puzzle inside grid
     NVars is N*N,
     length(Vars, NVars),
+    %Domain
+    domain(Vars, 1, 4),
     %Apply constraints that are equal on the two options - inside constraints
     starryCommon(N, Vars),
     %Apply constraints that are specific of this option - outside constraints
