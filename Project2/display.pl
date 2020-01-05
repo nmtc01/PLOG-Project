@@ -11,6 +11,7 @@ displayMainMenu:-
 * Displays puzzle grid.
 */
 displayGrid(0,_):-
+    resetTimer,
     nl.
 
 displayGrid(N, Char):-
