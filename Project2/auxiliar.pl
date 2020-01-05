@@ -121,3 +121,10 @@ selRandom(Var, _, BB0, BB1):-
 */
 resetTimer:-
     statistics(walltime,_).
+
+/*
+* Stops time counter and gives the time
+*/
+getTime(Time):-
+    statistics(walltime,[_,T]),
+    Time is (T//10)*10.

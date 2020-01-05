@@ -92,8 +92,11 @@ starryGenerate(N, Vars):-
     getRulesColumns(Vars, N, 0, RulesColumns, []),
     Size is N-1,
     getPuzzle(0, Size, Vars, Puzzle, []),
+    %Get time
+    getTime(Time),
     %Display solution
-    nl, display(Puzzle, RulesLines, RulesColumns, Size, 0).
+    nl, display(Puzzle, RulesLines, RulesColumns, Size, 0),
+    printTime(Time).
 
 /*
 * Applies constraints given by the user to lines (applyLinesRules) and to columns (applyColumnsRules):
@@ -110,8 +113,11 @@ starryUser(N, Vars, RulesLines, RulesColumns):-
     %Statistics
     %fd_statistics,
     %statistics,
+    %Get time
+    getTime(Time),
     %Display solution
-    nl, display(Vars, RulesLines, RulesColumns, N, 0).
+    nl, display(Vars, RulesLines, RulesColumns, N, 0),
+    printTime(Time).
 
 
 

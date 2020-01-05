@@ -68,11 +68,9 @@ displayLine([Head|Tail], RulesLines, Index):-
 /*
 * Prints time
 */
-printTime:-
-    statistics(walltime,[_,T]),
-    TS is (T//10)*10,
+printTime(Time):-
     nl,write('Time: '),
-    write(TS), write('ms'),
+    write(Time), write('ms'),
     nl,nl.
 
 /*
@@ -80,8 +78,7 @@ printTime:-
 */
 display(_, _, RulesCols, N, N):-
     displayGrid(N, '-'),nl,
-    displayLineOfRules(RulesCols),
-    printTime.
+    displayLineOfRules(RulesCols).
 
 display(Puzzle, RulesLines, RulesCols, N, Index):-
     displayGrid(N, '_'),
