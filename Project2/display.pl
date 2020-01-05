@@ -67,12 +67,15 @@ displayLine([Head|Tail], RulesLines, Index):-
     displayLine(Tail, RulesLines, Index).
 
 /*
-* Prints time
+* Prints statistics
 */
-printTime(Time):-
+printStatistics(Time, BackTracks, Constraints):-
     nl,write('Time: '),
-    write(Time), write('ms'),
-    nl,nl.
+    write(Time), write('ms'),nl,
+    write('Backtracks: '),
+    write(BackTracks),nl,
+    write('Number of Constraints: '),
+    write(Constraints),nl,nl.
 
 /*
 * Displays puzzle solution at the end

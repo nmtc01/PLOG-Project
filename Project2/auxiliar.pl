@@ -123,8 +123,10 @@ resetTimer:-
     statistics(walltime,_).
 
 /*
-* Stops time counter and gives the time
+* Stops time counter and gives the statistics
 */
-getTime(Time):-
+getStatistics(Time, BackTracks, Constraints):-
     statistics(walltime,[_,T]),
-    Time is (T//10)*10.
+    Time is (T//10)*10,
+    fd_statistics(backtracks, BackTracks),
+    fd_statistics(constraints, Constraints).

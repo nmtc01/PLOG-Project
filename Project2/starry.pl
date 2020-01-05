@@ -84,19 +84,16 @@ starryGenerate(N, Vars):-
     lastElementConstraint(Vars, N),
     %Labeling
     labeling([value(selRandom)], Vars),
-    %Statistics
-    %fd_statistics,
-    %statistics,
     %Get Rules and Puzzle separately - prepare display
     getRulesLines(Vars, N, 0, RulesLines, []),
     getRulesColumns(Vars, N, 0, RulesColumns, []),
     Size is N-1,
     getPuzzle(0, Size, Vars, Puzzle, []),
-    %Get time
-    getTime(Time),
+    %Get statistics
+    getStatistics(Time, BackTracks, Constraints),
     %Display solution
     nl, display(Puzzle, RulesLines, RulesColumns, Size, 0),
-    printTime(Time).
+    printStatistics(Time, BackTracks, Constraints).
 
 /*
 * Applies constraints given by the user to lines (applyLinesRules) and to columns (applyColumnsRules):
@@ -110,14 +107,11 @@ starryUser(N, Vars, RulesLines, RulesColumns):-
     applyColumnsRules(Vars, N, RulesColumns, 0),
     %Labeling
     labeling([], Vars),
-    %Statistics
-    %fd_statistics,
-    %statistics,
-    %Get time
-    getTime(Time),
+    %Get statistics
+    getStatistics(Time, BackTracks, Constraints),
     %Display solution
     nl, display(Vars, RulesLines, RulesColumns, N, 0),
-    printTime(Time).
+    printStatistics(Time, BackTracks, Constraints).
 
 
 
