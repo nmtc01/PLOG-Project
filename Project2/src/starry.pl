@@ -58,6 +58,8 @@ followPath('2', Vars):-
     %Apply constraints that are specific of this option - outside constraints
     starryUser(N, Vars, RulesLines, RulesColumns).
 
+followPath(_,_).
+
 /*
 * Applies main constraints of the intern puzzle, such as:
 * 1- exactly one white circle (sun), one black circle (moon), and one star in every row of the grid (verifyLines)

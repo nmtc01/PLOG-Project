@@ -3,9 +3,18 @@
 */
 displayMainMenu:-
     write('\33\[2J\n'),
+    write('   _____  _                               _    _  _        _      _'),nl,   
+    write('  /  ___|| |                             | \\  | |(_)      | |    | |'),nl, 
+    write('  \\  \\   | |   ___ _  _ __  _ __  _   _  |  \\ | |_   __ _ | |__  | |_'),nl, 
+    write('   \\  \\ | __| /  _  ||  __||  __|| | | | | . \\| | | /    ||  _ \\ | __|'),nl,
+    write('/\\__/ /  | |_ | (_| || |   | |   | |_| | | |\\   | || (_| || | | || |_'),nl, 
+    write('\\____/    \\__| \\__,_||_|   |_|    \\__, | \\_| \\_/|_| \\__, ||_| |_| \\__|'),nl,
+    write('                                   __/ |             __/ |'),nl,     
+    write('                                  |___/             |___/'),nl,
     write('Choose an option:'),nl,
     write('1 - Program generates random puzzle and solves it'),nl,
-    write('2 - User inputs a puzzle and program solves it'),nl.
+    write('2 - User inputs a puzzle and program solves it'),nl,
+    write('3 - Exit'),nl.
 
 /*
 * Displays puzzle grid.
