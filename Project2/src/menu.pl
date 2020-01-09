@@ -6,11 +6,12 @@
 * 2- Input a puzzle and solve it
 */
 mainMenu(Choice):-
-    displayMainMenu,
     repeat,
+    displayMainMenu,
     read_line(Line),
     nth0(0, Line, ChoiceCode),
-    char_code(Choice, ChoiceCode),!.
+    char_code(Choice, ChoiceCode),
+    (Choice = '1'; Choice = '2'; Choice = '3'),!.
 
 /*
 * Creates a sub menu - user has to input the board so that the program can solve it

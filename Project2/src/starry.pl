@@ -58,7 +58,7 @@ followPath('2', Vars):-
     %Apply constraints that are specific of this option - outside constraints
     starryUser(N, Vars, RulesLines, RulesColumns).
 
-followPath(_,_).
+followPath('3',_).
 
 /*
 * Applies main constraints of the intern puzzle, such as:
